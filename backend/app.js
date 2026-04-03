@@ -1,23 +1,32 @@
+const dotenv = require("dotenv");
+dotenv.config();
+
 const express = require("express");
 const app = express();
-const dotenv = require("dotenv");
+
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+
 const socketHandler = require("./socket/socketHandler");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const server = createServer(app);
 
-dotenv.config();
-
 const db = require("./config/db-config");
+const PORT = process.env.PORT || 5000;
 
-const PORT = process.env.PORT;
+app.use(cors({
+    origin : "http://localhost:5173" ,
+    credentials : true
+})) ;
 
 const authRouter = require("./routes/authRouter");
 const communicationRouter = require("./routes/communicationRouter");
 const patientRouter = require("./routes/patientRouter");
 const appointmentRouter = require("./routes/appointmentRouter") ;
+const medicationRouter = require("./routes/medicationRouter") ;
+const orderRouter = require("./routes/orderRouter") ;
 
 const io = new Server(server,
     {
@@ -40,6 +49,8 @@ app.use("/api/auth", authRouter);
 app.use("/api/communicate" , communicationRouter) ;
 app.use("/api/patient" , patientRouter) ;
 app.use("/api/appointment" , appointmentRouter) ;
+app.use("/api/medications" , medicationRouter) ;
+app.use("/api/orders" , orderRouter)
 
 // Health Route
 app.get("/health", (req, res) => {
@@ -47,5 +58,5 @@ app.get("/health", (req, res) => {
 })
 
 server.listen(PORT, () => {
-    console.log(`Server Running on PORT:${PORT} ✅`)
+    console.log(`Server Running on PORT:${PORT} ✅`) ;
 })
