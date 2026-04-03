@@ -27,11 +27,9 @@ const HealthPlusIcon = ({ className }) => (
   </svg>
 );
 
-// --- NEW: Interactive Card Wrapper with Erupting Particles ---
 const InteractiveFeatureCard = ({ item, cardVariants }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  // Generate a fixed set of particles that burst outwards from the center
   const hoverParticles = useMemo(() => {
     const colors = [
       "text-emerald-300", 
@@ -42,18 +40,18 @@ const InteractiveFeatureCard = ({ item, cardVariants }) => {
     ];
     
     return Array.from({ length: 20 }).map((_, i) => {
-      // Calculate random explosion angles and distances
+
       const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 160 + 100; // 100px to 260px spread
+      const distance = Math.random() * 160 + 100;
       
       return {
         id: i,
         color: colors[Math.floor(Math.random() * colors.length)],
         size: Math.random() * 14 + 10,
         xDrift: Math.cos(angle) * distance,
-        yDrift: Math.sin(angle) * distance - 40, // Slight upward bias
-        duration: Math.random() * 1.2 + 1.2, // 1.2s to 2.4s lifecycle
-        delay: Math.random() * 1.5, // Staggered spawning
+        yDrift: Math.sin(angle) * distance - 40,
+        duration: Math.random() * 1.2 + 1.2,
+        delay: Math.random() * 1.5,
         rotation: Math.random() * 360,
       };
     });
@@ -66,7 +64,7 @@ const InteractiveFeatureCard = ({ item, cardVariants }) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Container for the erupting particles (placed behind the card) */}
+
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none z-0">
         <AnimatePresence>
           {isHovered && hoverParticles.map((p) => (
@@ -81,11 +79,11 @@ const InteractiveFeatureCard = ({ item, cardVariants }) => {
               }}
               initial={{ opacity: 0, scale: 0.2, x: 0, y: 0 }}
               animate={{
-                opacity: [0, 0.8, 0], // Fade in then fade out
-                scale: [0.5, 1.2, 0.6], // Grow then shrink slightly
-                x: [0, p.xDrift], // Move outwards
-                y: [0, p.yDrift], // Move outwards
-                rotate: [0, p.rotation], // Spin outwards
+                opacity: [0, 0.8, 0], 
+                scale: [0.5, 1.2, 0.6], 
+                x: [0, p.xDrift], 
+                y: [0, p.yDrift], 
+                rotate: [0, p.rotation], 
               }}
               exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
               transition={{
@@ -100,8 +98,7 @@ const InteractiveFeatureCard = ({ item, cardVariants }) => {
           ))}
         </AnimatePresence>
       </div>
-      
-      {/* The Actual Card (placed in front of particles) */}
+
       <div className="relative z-10 w-full h-full transition-transform duration-300 ease-out hover:-translate-y-2">
         <FeatureCard
           title={item.title}
@@ -148,7 +145,6 @@ const FeaturesSection = () => {
     },
   ];
 
-  // Framer Motion variants for the staggered entrance
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -166,7 +162,6 @@ const FeaturesSection = () => {
     },
   };
 
-  // Generate background particles (run once)
   const healthParticles = useMemo(() => {
     const colors = [
       "text-emerald-300", 
@@ -179,19 +174,18 @@ const FeaturesSection = () => {
     return Array.from({ length: 35 }).map((_, i) => ({
       id: i,
       left: `${Math.random() * 100}%`,
-      size: Math.random() * 16 + 10, // 10px to 26px
-      duration: Math.random() * 8 + 8, // 8s to 16s float time
-      delay: Math.random() * -10, // Negative delay so they start already on screen
+      size: Math.random() * 16 + 10,
+      duration: Math.random() * 8 + 8,
+      delay: Math.random() * -10,
       color: colors[Math.floor(Math.random() * colors.length)],
-      xDrift: (Math.random() - 0.5) * 60, // Slight horizontal sway
-      rotation: Math.random() * 360, // Start at a random rotation
+      xDrift: (Math.random() - 0.5) * 60,
+      rotation: Math.random() * 360,
     }));
   }, []);
 
   return (
     <section className="relative z-10 w-full py-20 lg:py-28 px-4 sm:px-6 md:px-12 lg:px-20 overflow-hidden bg-white">
-      
-      {/* Dynamic Health Particles Background */}
+
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         {healthParticles.map((particle) => (
           <motion.div
@@ -204,10 +198,10 @@ const FeaturesSection = () => {
               bottom: "-10%",
             }}
             animate={{
-              y: [0, -1500], // Float up past the screen
-              x: [0, particle.xDrift, -particle.xDrift, 0], // Gentle swaying
-              opacity: [0, 0.4, 0.6, 0], // Fade in, hold, fade out (evaporate)
-              rotate: [particle.rotation, particle.rotation + 90] // Slow spin
+              y: [0, -1500],
+              x: [0, particle.xDrift, -particle.xDrift, 0], 
+              opacity: [0, 0.4, 0.6, 0], 
+              rotate: [particle.rotation, particle.rotation + 90] 
             }}
             transition={{
               duration: particle.duration,
@@ -221,15 +215,13 @@ const FeaturesSection = () => {
         ))}
       </div>
 
-      {/* Subtle Background Glow Decorations */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
         <div className="absolute top-[10%] left-[-5%] w-75 h-75 bg-blue-100/50 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-[10%] right-[-5%] w-100 h-100 bg-indigo-50/60 rounded-full blur-[120px]"></div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Section Header */}
+
         <div className="mb-16 md:mb-20 text-center flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6 shadow-sm backdrop-blur-sm">
              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-600"></span>
@@ -249,7 +241,6 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        {/* Feature Cards Grid with Staggered Animation & Hover Effects */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
