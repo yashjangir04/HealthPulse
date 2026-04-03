@@ -2,7 +2,12 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import MainLayout from "./layouts/MainLayout";
+<<<<<<< HEAD
+import Signup from './pages/Signup';
+import MedicineDelivery from "./pages/MedicineDelivery";
+=======
 import Contact from "./pages/ContactPage";
+>>>>>>> 85001252fa3f802018c2319db26c4ed87074a9fc
 
 const App = () => {
   return (
