@@ -63,8 +63,7 @@ const FeatureCard = ({ title, description, imageSrc, altText }) => {
             >
               {title}
             </h3>
-            
-            {/* Sunken Icon Well */}
+
             <div 
               className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center shrink-0 rounded-2xl bg-slate-50 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] border border-slate-100 relative overflow-visible"
               style={{ transform: 'translateZ(20px)' }}
@@ -76,7 +75,7 @@ const FeatureCard = ({ title, description, imageSrc, altText }) => {
                   className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_10px_10px_rgba(0,0,0,0.1)] transition-transform duration-500 group-hover:scale-125 group-hover:-rotate-6" 
                   style={{ 
                     mixBlendMode: 'multiply',
-                    transform: 'translateZ(50px)' // Pops the image above the well
+                    transform: 'translateZ(50px)' 
                   }}
                 />
               ) : (
@@ -85,7 +84,6 @@ const FeatureCard = ({ title, description, imageSrc, altText }) => {
             </div>
           </div>
 
-          {/* Description */}
           <p 
             className="text-slate-500 text-sm sm:text-[15px] font-medium leading-relaxed line-clamp-3 group-hover:text-slate-600 transition-colors duration-300 pr-2"
             style={{ transform: 'translateZ(30px)' }}
@@ -93,7 +91,6 @@ const FeatureCard = ({ title, description, imageSrc, altText }) => {
             {description}
           </p>
 
-          {/* Footer Action Hint */}
           <div 
             className="mt-auto flex items-center gap-2 text-blue-600 font-bold text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0"
             style={{ transform: 'translateZ(45px)' }}
@@ -103,7 +100,6 @@ const FeatureCard = ({ title, description, imageSrc, altText }) => {
           </div>
         </div>
 
-        {/* Ambient Bottom Glow */}
         <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-blue-50 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       </motion.div>
     </div>

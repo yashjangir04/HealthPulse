@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import MainLayout from "./layouts/MainLayout";
+import Contact from "./pages/ContactPage";
 
 const App = () => {
   return (
@@ -34,6 +35,19 @@ const App = () => {
             </MainLayout>
           }
         />
+
+                <Route
+          path="/contact"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Contact />
+            </MainLayout>
+          }
+        ></Route>
       </Routes>
     </BrowserRouter>
   );
