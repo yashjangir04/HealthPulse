@@ -26,7 +26,6 @@ const Sidebar = ({
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Logic to get initials from name
   const getInitials = (name) => {
     if (!name) return "U";
     const parts = name.trim().split(/\s+/);
@@ -158,7 +157,7 @@ const Sidebar = ({
         <div className={`px-3 pt-6 border-t border-gray-100 ${isCollapsed && !isOpen ? "flex flex-col items-center" : ""}`}>
           {isLoggedIn ? (
             <div className="flex flex-col gap-4">
-              {/* Profile Info */}
+
               <div className="flex items-center gap-3 px-1">
                 <div className="shrink-0 w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
                   {getInitials(user?.name)}
