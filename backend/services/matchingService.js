@@ -3,6 +3,12 @@
 const crypto = require('crypto') ;
 const Appointment = require("../models/appointment-model") ;
 
+let io = null ;
+
+const setIO = (_io) => {
+    io = _io ;
+}
+
 const doctors = {
     general: new Set(),
     cardiologist: new Set(),
@@ -48,7 +54,8 @@ const removeDoctor = (doctor) => {
     let speciality = doctor.speciality;
 
     if (doctors[speciality]) {
-        doctors[speciality] = new Set(
+        doctoy
+        rs[speciality] = new Set(
             [...doctors[speciality]].filter(
                 (d) => d._id !== doctor._id
             )
@@ -111,11 +118,14 @@ const createRoom = async (doctor, patient) => {
         doctorID : doctor._id ,
         patientID : patient._id
     });
+    io.to(doctor.socket).emit("matched" , payload) ;
+    io.to(patient.socket).emit("matched" , payload) ;
 }
 
 module.exports = {
     addDoctor,
     addPatient,
     removeDoctor,
-    removePatient
+    removePatient,
+    setIO
 }

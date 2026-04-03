@@ -3,6 +3,8 @@ const app = express();
 const dotenv = require("dotenv");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const socketHandler = require("./socket/socketHandler");
+const cookieParser = require("cookie-parser");
 
 const server = createServer(app);
 
@@ -13,7 +15,8 @@ const db = require("./config/db-config");
 const PORT = process.env.PORT;
 
 const authRouter = require("./routes/authRouter");
-const cookieParser = require("cookie-parser");
+const communicationRouter = require("./routes/communicationRouter");
+const patientRouter = require("./routes/patientRouter");
 
 const io = new Server(server,
     {
@@ -29,8 +32,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+socketHandler(io) ;
+
 // Routes
-app.use("/api/auth", authRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/communicate" , communicationRouter) ;
+app.use("/api/patient" , patientRouter) ;
 
 // Health Route
 app.get("/health", (req, res) => {
