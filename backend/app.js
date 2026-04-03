@@ -16,7 +16,7 @@ const PORT = process.env.PORT;
 
 const authRouter = require("./routes/authRouter");
 const communicationRouter = require("./routes/communicationRouter");
-
+const patientRouter = require("./routes/patientRouter");
 
 const io = new Server(server,
     {
@@ -37,6 +37,7 @@ socketHandler(io) ;
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/communicate" , communicationRouter) ;
+app.use("/api/patient" , patientRouter) ;
 
 // Health Route
 app.get("/health", (req, res) => {
