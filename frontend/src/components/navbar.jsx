@@ -6,21 +6,18 @@ import plusIcon from "../assets/plus.svg";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // --- DEMO STATES ---
+
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [openModal, setOpenModal] = useState(false); // Added missing state
-  const modalRef = useRef(null); // Added missing ref
+  const [openModal, setOpenModal] = useState(false);
+  const modalRef = useRef(null);
 
   const user = { name: "Yash", email: "yash@healthpulse.com" };
   const logout = () => setIsLoggedIn(false);
-  // -------------------
 
   return (
     <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-10 bg-white/70 backdrop-blur-xl z-50 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
 
-      {/* Brand Logo */}
       <div 
         className="flex items-center gap-3 group cursor-pointer" 
         onClick={() => {
@@ -39,7 +36,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="lg:hidden p-2 text-gray-600 hover:text-blue-600 focus:outline-none transition-colors z-50"
@@ -52,7 +48,6 @@ const Navbar = () => {
         </div>
       </button>
 
-      {/* Nav Links & Auth Section */}
       <div
         className={`${
           isMenuOpen
@@ -85,7 +80,6 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Auth Buttons */}
         <div className="border-t lg:border-none border-gray-100 pt-6 lg:pt-0">
           {isLoggedIn ? (
             <div className="relative">
@@ -96,7 +90,6 @@ const Navbar = () => {
                 {user.name.charAt(0).toUpperCase()}
               </div>
 
-              {/* Profile Dropdown */}
               <div
                 className={`absolute right-0 top-full mt-4 w-56 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden z-50 transition-all duration-300 transform origin-top-right ${
                   openModal ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
