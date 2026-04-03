@@ -13,7 +13,6 @@ const Navbar = () => {
   const [openModal, setOpenModal] = useState(false);
   const modalRef = useRef(null);
 
-  // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -24,15 +23,13 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location]);
 
   return (
     <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-10 bg-white/70 backdrop-blur-xl z-100 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-      
-      {/* Brand & Logo */}
+
       <div className="flex items-center gap-3 group cursor-pointer" onClick={() => navigate("/")}>
         <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
           <img
@@ -53,7 +50,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="lg:hidden p-2 text-gray-600 hover:text-blue-600 focus:outline-none transition-colors"
@@ -66,7 +62,6 @@ const Navbar = () => {
         </div>
       </button>
 
-      {/* Navigation & Actions */}
       <div
         className={`${
           isMenuOpen
@@ -74,7 +69,7 @@ const Navbar = () => {
             : "hidden"
         } lg:flex flex-col lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:border-none lg:shadow-none items-center space-y-6 lg:space-y-0 lg:space-x-10`}
       >
-        {/* Main Links */}
+
         <ul className="flex flex-col lg:flex-row items-center w-full lg:w-auto space-y-4 lg:space-y-0 lg:space-x-2">
           <li className="w-full lg:w-auto">
             <Link
@@ -102,7 +97,6 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Auth Section */}
         <div className="w-full lg:w-auto border-t lg:border-none border-gray-100 pt-6 lg:pt-0 flex justify-center">
           {isLoggedIn ? (
             <div className="relative">
@@ -113,7 +107,6 @@ const Navbar = () => {
                 {user?.name?.charAt(0).toUpperCase() || <User size={20} />}
               </div>
 
-              {/* Profile Dropdown */}
               <div
                 className={`absolute right-0 top-full mt-4 w-56 bg-white border border-gray-100 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] rounded-2xl overflow-hidden z-110 transition-all duration-300 transform origin-top-right ${openModal ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}`}
                 ref={modalRef}
