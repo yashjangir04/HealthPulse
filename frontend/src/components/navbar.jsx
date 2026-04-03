@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react"; // Added useRef here
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import logo from "../assets/logo.svg";
 import plusIcon from "../assets/plus.svg";
@@ -6,11 +6,21 @@ import plusIcon from "../assets/plus.svg";
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // --- DEMO STATES ---
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false); // Added missing state
+  const modalRef = useRef(null); // Added missing ref
+
+  const user = { name: "Yash", email: "yash@healthpulse.com" };
+  const logout = () => setIsLoggedIn(false);
+  // -------------------
 
   return (
     <nav className="fixed top-0 w-full h-20 md:h-24 flex items-center justify-between px-6 md:px-10 bg-white/70 backdrop-blur-xl z-50 border-b border-gray-100 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
 
+      {/* Brand Logo */}
       <div 
         className="flex items-center gap-3 group cursor-pointer" 
         onClick={() => {
@@ -29,6 +39,7 @@ const Navbar = () => {
         </div>
       </div>
 
+      {/* Mobile Menu Toggle */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="lg:hidden p-2 text-gray-600 hover:text-blue-600 focus:outline-none transition-colors z-50"
@@ -41,41 +52,85 @@ const Navbar = () => {
         </div>
       </button>
 
+      {/* Nav Links & Auth Section */}
       <div
         className={`${
           isMenuOpen
             ? "absolute top-20 left-0 w-full bg-white border-b border-gray-100 shadow-xl flex flex-col p-6 animate-in slide-in-from-top duration-300"
             : "hidden"
-        } lg:flex lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:border-none lg:shadow-none items-center lg:space-x-4`}
+        } lg:flex lg:flex-row lg:static lg:w-auto lg:bg-transparent lg:border-none lg:shadow-none items-center lg:space-x-8`}
       >
         <ul className="flex flex-col lg:flex-row items-center w-full lg:w-auto space-y-4 lg:space-y-0 lg:space-x-2">
-          <li className="w-full lg:w-auto">
+          <li>
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className={`block w-full text-center px-5 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ${
-                location.pathname === "/"
-                  ? "text-blue-700 bg-blue-50 shadow-sm"
-                  : "text-gray-500 hover:text-blue-600 hover:bg-gray-50"
+              className={`block px-5 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ${
+                location.pathname === "/" ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:text-blue-600"
               }`}
             >
               Home
             </Link>
           </li>
-          <li className="w-full lg:w-auto">
+          <li>
             <Link
               to="/about"
               onClick={() => setIsMenuOpen(false)}
-              className={`block w-full text-center px-5 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ${
-                location.pathname === "/about"
-                  ? "text-blue-700 bg-blue-50 shadow-sm"
-                  : "text-gray-500 hover:text-blue-600 hover:bg-gray-50"
+              className={`block px-5 py-2.5 rounded-full text-[15px] font-bold transition-all duration-300 ${
+                location.pathname === "/about" ? "text-blue-700 bg-blue-50" : "text-gray-500 hover:text-blue-600"
               }`}
             >
               About Us
             </Link>
           </li>
         </ul>
+
+        {/* Auth Buttons */}
+        <div className="border-t lg:border-none border-gray-100 pt-6 lg:pt-0">
+          {isLoggedIn ? (
+            <div className="relative">
+              <div 
+                onClick={() => setOpenModal(!openModal)} 
+                className="w-10 h-10 md:w-11 md:h-11 rounded-full cursor-pointer bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg ring-2 ring-white shadow-lg hover:scale-105 transition-all"
+              >
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+
+              {/* Profile Dropdown */}
+              <div
+                className={`absolute right-0 top-full mt-4 w-56 bg-white border border-gray-100 shadow-2xl rounded-2xl overflow-hidden z-50 transition-all duration-300 transform origin-top-right ${
+                  openModal ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+                }`}
+                ref={modalRef}
+              >
+                <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                  <p className="text-sm font-semibold text-gray-800">{user.name}</p>
+                  <p className="text-xs text-gray-500">{user.email}</p>
+                </div>
+                <div className="p-2">
+                  <button onClick={() => {navigate("/profile"); setOpenModal(false);}} className="w-full text-left px-4 py-2.5 rounded-xl text-gray-600 font-semibold text-sm hover:bg-blue-50 transition-colors">
+                    Dashboard
+                  </button>
+                  <button onClick={() => {logout(); setOpenModal(false); navigate("/");}} className="w-full text-left px-4 py-2.5 rounded-xl text-red-600 font-semibold text-sm hover:bg-red-50 transition-colors mt-1">
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col lg:flex-row items-center gap-3">
+              <Link to="/login" className="px-6 py-2.5 text-[15px] font-bold text-gray-600 hover:text-blue-600 transition-all">
+                Sign In
+              </Link>
+              <button
+                onClick={() => setIsLoggedIn(true)}
+                className="px-7 py-2.5 rounded-full text-[15px] font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
+              >
+                Get Started
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
