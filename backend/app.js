@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
+const socketHandler = require("./socket/socketHandler");
 
 const server = createServer(app);
 
@@ -28,6 +29,8 @@ const io = new Server(server,
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+socketHandler(io) ;
 
 // Routes
 app.use("/api/auth", authRouter)
