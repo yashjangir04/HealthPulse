@@ -13,8 +13,7 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Landing />} />
-          
-          {/* You can add more routes here later */}
+ 
           <Route path="/about" element={<div className="p-10">About Page</div>} />
         </Routes>
       </div>
