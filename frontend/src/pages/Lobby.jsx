@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { io } from "socket.io-client";
 import { 
   Activity, 
   X, 
@@ -20,7 +21,67 @@ const Lobby = () => {
   const [connectionStatus, setConnectionStatus] = useState("connecting");
   const [elapsedTime, setElapsedTime] = useState(0);
   const isDoctor = user?.role === "doctor";
+  useEffect(() => {
+    // Timer for UI purposes
+    const timer = setInterval(() => setElapsedTime(prev => prev + 1), 1000);
+    
+    // Safely initialize socket inside the effect
+    const socket = io("http://localhost:5000");
 
+    socket.on("connect", () => {
+      if (isDoctor) {
+        socket.emit("enter-doctor", {
+          _id: user._id,
+          speciality: user.specialization.toLowerCase(),
+          socket: socket.id,
+        });
+      } else {
+        socket.emit("enter-patient", {
+          _id: user._id,
+          requirement: speciality.toLowerCase(),
+          socket: socket.id,
+        });
+      }
+    });
+
+    socket.on("matched", (data) => {
+      navigate(`/meeting/${data.roomID}`);
+    });
+
+    socket.on("disconnect", () => {
+      if (isDoctor) {
+        socket.emit("leave-doctor", `Doctor disconnected : ${socket.id} ❌`);
+      } else {
+        socket.emit("leave-patient", `Patient disconnected : ${socket.id} ❌`);
+      }
+    });
+
+    return () => {
+      clearInterval(timer);
+      if (isDoctor) {
+        socket.emit("leave-doctor", { _id: user._id, requirement: speciality, socket: socket.id });
+      } else {
+        socket.emit("leave-patient", { _id: user._id, requirement: speciality, socket: socket.id });
+      }
+      socket.disconnect();
+    };
+  }, [navigate, user, speciality, isDoctor]);
+
+  const handleCancel = () => {
+    navigate(-1); // go to previous route/page
+  };
+
+  const handleTryAgain = () => {
+    setConnectionStatus("connecting");
+    setElapsedTime(0);
+    window.location.reload(); 
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  };
   return (
     <div className="min-h-screen bg-[#FAFCFF] font-sans text-gray-900 pt-24 pb-32">
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
