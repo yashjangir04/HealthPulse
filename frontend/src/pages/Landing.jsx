@@ -3,7 +3,7 @@ import SideBar from '../components/SideBar'
 const Landing = () => {
   return (
 <>
-    <SideBar />
+    <SideBar  />
 </>
   )
 }
