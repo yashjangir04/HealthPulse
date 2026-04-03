@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-header">
+    <h1>Medical Profile</h1>
+    <p class="subtitle">Provide your personal medical history to receive customized, context-aware answers.</p>
+</div>
+
+{% if success %}
+<div class="alert success-alert fade-in">
+    <i class="ph-fill ph-check-circle"></i>
+    <div class="alert-content">
+        <h4>Success</h4>
+        <p>Your medical information was successfully securely encrypted and saved to your private database.</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="profile-card glass-panel fade-in">
+    <div class="card-header">
+        <div class="icon-circle">
+            <i class="ph ph-file-text"></i>
+        </div>
+        <div>
+            <h3>Add Health Information</h3>
+            <p>Any details you add here will be used silently by the AI to align answers to your health situation.</p>
+        </div>
+    </div>
+    
+    <form action="{{ url_for('personal') }}" method="POST" class="profile-form">
+        <div class="form-group">
+            <label for="personal_info">New Medical Notes</label>
+            <textarea 
+                id="personal_info" 
+                name="personal_info" 
+                rows="6" 
+                class="modern-textarea"
+                placeholder="E.g., I am 45 years old with a history of Type 2 Diabetes. Currently taking Metformin 500mg twice daily..."
+                required></textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-large">
+                <i class="ph ph-floppy-disk"></i>
+                Save to Profile
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="info-card fade-in" style="animation-delay: 0.1s;">
+    <h3><i class="ph-fill ph-shield-check"></i> Privacy First</h3>
+    <p>Your personal data remains strictly local on your machine within the vector database and `personal_data.txt`. It is not used for external model training.</p>
+</div>
+{% endblock %}
