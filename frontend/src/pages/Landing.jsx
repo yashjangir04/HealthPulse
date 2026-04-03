@@ -1,10 +1,10 @@
 import React from 'react'
-
+import SideBar from '../components/SideBar'
 const Landing = () => {
   return (
-    <h1>
-        Landing page
-    </h1>
+<>
+    <SideBar />
+</>
   )
 }
 
