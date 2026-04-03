@@ -26,7 +26,7 @@ const Sidebar = ({
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
 
- 
+  // Logic to get initials from name
   const getInitials = (name) => {
     if (!name) return "U";
     const parts = name.trim().split(/\s+/);
@@ -44,9 +44,9 @@ const Sidebar = ({
     }
   };
 
-
+  // --- ROLE BASED MENU LOGIC ---
   const getMenuItems = () => {
- 
+    // 1. Define all possible menu items
     const allItems = {
       profile: { icon: <User size={20} />, label: "Profile", path: "/profile" },
       aiHelp: { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
@@ -59,7 +59,7 @@ const Sidebar = ({
       patientOrders: { icon: <ShoppingBag size={20} />, label: "My Orders", path: "/patient/orders" }, 
     };
 
-    
+    // 2. Return specific arrays based on the user's role
     switch (user?.role) {
       case "doctor":
         return [
@@ -74,7 +74,7 @@ const Sidebar = ({
         ];
       case "patient":
       default:
-
+        // Default to showing all patient items
         return [
           allItems.profile,
           allItems.aiHelp,
@@ -88,7 +88,7 @@ const Sidebar = ({
     }
   };
 
-
+  // Generate the menu array for the current user
   const menuItems = getMenuItems();
 
   return (
@@ -121,7 +121,7 @@ const Sidebar = ({
         `}
       >
 
-
+        {/* Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="hidden lg:flex absolute -right-3 top-4 bg-white border border-gray-100 rounded-full p-1 shadow-lg hover:bg-blue-50 transition-colors z-60"
@@ -133,6 +133,7 @@ const Sidebar = ({
           )}
         </button>
 
+        {/* Menu Items */}
         <div className="space-y-1 px-3">
           {menuItems.map((item, index) => (
             <NavLink
@@ -159,11 +160,11 @@ const Sidebar = ({
           ))}
         </div>
 
-    
+        {/* Bottom Section */}
         <div className={`px-3 pt-6 border-t border-gray-100 ${isCollapsed && !isOpen ? "flex flex-col items-center" : ""}`}>
           {isLoggedIn ? (
             <div className="flex flex-col gap-4">
-  
+              {/* Profile Info */}
               <div className="flex items-center gap-3 px-1">
                 <div className="shrink-0 w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
                   {getInitials(user?.name)}
@@ -178,7 +179,7 @@ const Sidebar = ({
                 )}
               </div>
 
-       
+              {/* Real Logout Button */}
               <button
                 type="button"
                 onClick={handleLogout}
@@ -190,7 +191,7 @@ const Sidebar = ({
               </button>
             </div>
           ) : (
-         
+            /* Login Button */
             <button
               type="button"
               onClick={() => navigate("/account/login")}

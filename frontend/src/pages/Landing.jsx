@@ -1,10 +1,17 @@
 import React from 'react'
-import SideBar from '../components/SideBar'
+import HeroSection from '../components/HeroSection';
+import FeaturesSection from '../components/featuresSection';
+
 const Landing = () => {
   return (
-<>
-    <SideBar  />
-</>
+    <div className="min-h-screen flex flex-col">
+
+      <main className="grow">
+        <HeroSection />
+        <FeaturesSection />
+      </main>
+
+    </div>
   )
 }
 
