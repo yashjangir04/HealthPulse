@@ -4,6 +4,8 @@ const dotenv = require("dotenv") ;
 
 dotenv.config() ;
 
+const db = require("./config/db-config") ;
+
 const PORT = process.env.PORT ;
 
 app.get("/" , (req , res) => {
