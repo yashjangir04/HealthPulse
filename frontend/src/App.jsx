@@ -2,8 +2,12 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import MainLayout from "./layouts/MainLayout";
+<<<<<<< HEAD
 import Signup from './pages/Signup';
 import MedicineDelivery from "./pages/MedicineDelivery";
+=======
+import Contact from "./pages/ContactPage";
+>>>>>>> 85001252fa3f802018c2319db26c4ed87074a9fc
 
 const App = () => {
   return (
@@ -36,39 +40,16 @@ const App = () => {
             </MainLayout>
           }
         />
-              <Route
-          path="/account/register"
-          element={
-            <MainLayout
-              showNavbar={false}
-              showSidebar={false}
-              isFullHeighted={true}
-            >
-              <Signup />
-            </MainLayout>
-          }
-        ></Route>
-             <Route
-          path="/medicines/:meetingID"
+
+                <Route
+          path="/contact"
           element={
             <MainLayout
               showNavbar={false}
               showSidebar={true}
               isFullHeighted={true}
             >
-              <MedicineDelivery />
-            </MainLayout>
-          }
-        ></Route>
-               <Route
-          path="/account/register"
-          element={
-            <MainLayout
-              showNavbar={false}
-              showSidebar={false}
-              isFullHeighted={true}
-            >
-              <Signup />
+              <Contact />
             </MainLayout>
           }
         ></Route>
