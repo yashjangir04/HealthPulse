@@ -1,26 +1,42 @@
-const express = require("express") ;
-const app = express() ;
-const dotenv = require("dotenv") ;
+const express = require("express");
+const app = express();
+const dotenv = require("dotenv");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
-dotenv.config() ;
+const server = createServer(app);
 
-const db = require("./config/db-config") ;
+dotenv.config();
 
-const PORT = process.env.PORT ;
+const db = require("./config/db-config");
 
-const authRouter = require("./routes/authRouter") ;
+const PORT = process.env.PORT;
 
-app.use(express.json()) ;
-app.use(express.urlencoded({ extended : true })) ;
+const authRouter = require("./routes/authRouter");
+const cookieParser = require("cookie-parser");
+
+const io = new Server(server,
+    {
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"],
+            credentials: true
+        }
+    }
+);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes
-app.use("/api/auth" , authRouter)
+app.use("/api/auth", authRouter)
 
 // Health Route
-app.get("/health" , (req , res) => {
-    res.send("Server health : 100% ✅") ;
+app.get("/health", (req, res) => {
+    res.send("Server health : 100% ✅");
 })
 
-app.listen(PORT , () => {
+server.listen(PORT, () => {
     console.log(`Server Running on PORT:${PORT} ✅`)
 })
