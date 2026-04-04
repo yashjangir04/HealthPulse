@@ -8,6 +8,7 @@ router.post("/get-all-active-orders", authMiddleware, orderController.getAllActi
 router.post("/add-response-to-order", authMiddleware, orderController.addResponseToOrder);
 router.post("/get-patient-orders", authMiddleware, orderController.getPatientOrders);
 router.post("/accept-order", authMiddleware, orderController.acceptOrder);
+router.post("/reject-order", authMiddleware, orderController.rejectOrder);
 router.post("/get-shopkeeper-accepted-orders", authMiddleware, orderController.getShopkeeperAcceptedDeals);
 
 module.exports = router;

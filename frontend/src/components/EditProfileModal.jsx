@@ -38,7 +38,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
 
      
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-black text-[#1B80FD] uppercase tracking-widest ml-1">Height</label>
+            <label className="text-xs font-black text-[#1B80FD] uppercase tracking-widest ml-1">Height (cm)</label>
             <input 
               type="text" 
               className="bg-[#F2F7FF] border-2 border-transparent focus:border-[#1B80FD]/30 focus:bg-white outline-none p-3 rounded-xl font-semibold text-slate-600 transition-all"

@@ -10,3 +10,5 @@ export const getAllActiveOrders = () => API.post('/get-all-active-orders') ;
 export const addResponseToOrder = (data) => API.post('/add-response-to-order' , data) ;
 export const getPatientOrders = () => API.post('/get-patient-orders') ;
 export const acceptOrder = (data) => API.post('/accept-order' , data) ;
+export const rejectOrder = (data) => API.post('/reject-order' , data) ;
+export const getShopkeeperAcceptedDeals = () => API.post('/get-shopkeeper-accepted-orders') ;

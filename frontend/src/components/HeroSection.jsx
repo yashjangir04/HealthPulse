@@ -7,6 +7,8 @@ import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
 import Heart from "../components/Heart";
 
+import { useNavigate } from "react-router-dom";
+
 const words = ["trusted", "accessible", "empowering", "digital"];
 
 // --- Custom component for automatic & mouse-tracked rotation ---
@@ -38,6 +40,7 @@ function InteractiveModel({ children }) {
 export default function HeroSection() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
+  const navigate = useNavigate();
 
   // Handle the text rotation effect
   useEffect(() => {
@@ -98,7 +101,9 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
-            <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-[0_8px_25px_-8px_rgba(79,70,229,0.6)] hover:shadow-[0_12px_35px_-8px_rgba(79,70,229,0.7)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group">
+            <button onClick={() => {
+              navigate('/account/register')
+            }} className="w-full cursor-pointer sm:w-auto px-8 py-4 text-base font-bold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-[0_8px_25px_-8px_rgba(79,70,229,0.6)] hover:shadow-[0_12px_35px_-8px_rgba(79,70,229,0.7)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group">
               Get Started
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
@@ -108,11 +113,12 @@ export default function HeroSection() {
             </button>
           </div>
 
-          <div className="mt-12 w-full max-w-md lg:max-w-sm">
+          <div onClick={() => {
+            navigate('/ai-help-native') ;
+          }} className="mt-12 w-full cursor-pointer max-w-md lg:max-w-sm">
             <div className="group cursor-pointer flex items-center justify-between px-6 py-4 bg-white border border-blue-50 rounded-2xl shadow-[0_4px_20px_-4px_rgba(37,99,235,0.15)] hover:shadow-[0_8px_30px_-4px_rgba(37,99,235,0.3)] transition-all duration-300 hover:-translate-y-1">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                  {/* Removed animate-pulse here to stop continuous GPU repainting */}
                   <MessageSquare size={20} />
                 </div>
                 <div className="flex flex-col text-left">

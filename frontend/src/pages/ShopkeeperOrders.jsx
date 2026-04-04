@@ -38,10 +38,15 @@ const ShopkeeperOrders = () => {
 
   useEffect(() => {
     fetchOrders();
+
+    const intervalId = setInterval(() => {
+      fetchOrders();
+    }, 10000);
+
+    return () => clearInterval(intervalId);
   }, []);
 
   const getShopkeeperStatus = (order) => {
-    // 1. Handle if the order is already finalized by the patient
     if (order.status === "done" || order.status === "completed") {
       const winningShopkeeperId = order.shopkeeperID?._id || order.shopkeeperID;
       return String(winningShopkeeperId) === String(currentShopkeeper)
@@ -49,7 +54,6 @@ const ShopkeeperOrders = () => {
         : "closed";
     }
 
-    // 2. Safely find if the current shopkeeper has responded
     const myResponse = (order.responses || []).find((r) => {
       const responseShopId = r.shopkeeperID?._id || r.shopkeeperID;
       return String(responseShopId) === String(currentShopkeeper);
@@ -60,7 +64,7 @@ const ShopkeeperOrders = () => {
     if (myResponse.status === "accepted") return "quoted"; // Accepted the request -> Quoted
     if (myResponse.status === "rejected") return "rejected"; // Rejected the request -> Rejected
 
-    return "requests"; // Fallback
+    return "requests";
   };
 
   const initiateAccept = (orderId) => {

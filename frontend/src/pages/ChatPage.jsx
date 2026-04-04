@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useLocation } from "react-router-dom";
-import { Send, Bot, Sparkles, User as UserIcon, Loader2, Volume2 } from "lucide-react";
+import { Send, Bot, Sparkles, User as UserIcon, Loader2, Volume2, Mic, MicOff } from "lucide-react";
 import { populateDB, resetDB, askQuestion } from "../api/bot";
 
 const INITIAL_MESSAGES = [
@@ -23,6 +23,12 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null);
   // Store detected language from voice command for TTS reply
   const voiceLangRef = useRef("hi");
+  
+  // Microphone recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const streamRef = useRef(null);
 
   useEffect(() => {
     const handleExit = () => {
@@ -142,6 +148,66 @@ const ChatPage = () => {
       return () => clearTimeout(t);
     }
   }, [location.state, loading, sendMessage]);
+
+  const handleToggleMic = async () => {
+    if (isRecording) {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
+      setIsRecording(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        setIsTyping(true);
+        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        const form = new FormData();
+        form.append("audio", blob, "command.webm");
+
+        try {
+          const res = await fetch("http://127.0.0.1:5501/api/voice-command", { method: "POST", body: form });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Server error");
+
+          if (data.chatMessage) {
+            voiceLangRef.current = data.detectedLanguage || "hi";
+            sendMessage(data.chatMessage, true);
+          } else {
+            // Even if the intent is not a pure chat message, if we are in chat just send the translated text
+            if (data.translatedText) {
+              voiceLangRef.current = data.detectedLanguage || "hi";
+              sendMessage(data.translatedText, true);
+            }
+          }
+        } catch (err) {
+          console.error("Voice processing error:", err);
+          setIsTyping(false);
+        } finally {
+          if (streamRef.current) {
+            streamRef.current.getTracks().forEach((track) => track.stop());
+            streamRef.current = null;
+          }
+        }
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error("Mic access denied:", err);
+      alert("Microphone access is required to use this feature.");
+    }
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -269,6 +335,18 @@ const ChatPage = () => {
               className="flex-1 max-h-32 min-h-[44px] bg-transparent resize-none outline-none text-[15px] text-slate-800 placeholder:text-slate-400 py-2.5"
               rows={1}
             />
+            <button
+              type="button"
+              onClick={handleToggleMic}
+              disabled={isTyping && !isRecording}
+              className={`shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center transition-colors shadow-sm ${
+                isRecording 
+                  ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" 
+                  : "bg-slate-200 hover:bg-slate-300 text-slate-600"
+              }`}
+            >
+              {isRecording ? <MicOff size={18} /> : <Mic size={18} />}
+            </button>
             <button
               type="submit"
               disabled={!inputValue.trim() || isTyping}
