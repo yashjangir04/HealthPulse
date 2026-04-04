@@ -10,9 +10,11 @@ import Account from "../components/steps/Account";
 import { signupDoctor } from "../api/auth";
 import AuthLayout from "../layouts/AuthLayout";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../components/ToastContext";
 
 const StepForm = () => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -26,6 +28,7 @@ const StepForm = () => {
     gender: "",
     phoneNumber: "",
     specialization: "",
+    hpId: "",
     qualification: "",
     university: "",
     address: {
@@ -75,12 +78,11 @@ const StepForm = () => {
       const response = await signupDoctor(formData);
 
       console.log("DOCTOR registered:", response.data);
-
+      showToast("Account created successfully", "success");
       navigate("/account/login");
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
-
-      alert("Registration failed");
+      showToast(error.response?.data?.msg || "Registration failed", "error");
     }
   };
 

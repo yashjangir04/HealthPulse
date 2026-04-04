@@ -12,7 +12,9 @@ import { FaWeightScale } from "react-icons/fa6";
 import { useAuth } from "../auth/AuthContext";
 import { endAppointment, getAppointmentDetails } from "../api/appointment";
 import { askQuestion } from "../api/bot";
+import { rateDoctor } from "../api/doctor";
 import { io } from "socket.io-client";
+import { Star } from "lucide-react";
 
 const MeetingRoom = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -41,6 +43,11 @@ const MeetingRoom = () => {
   const [isCheckModalOpen, setIsCheckModalOpen] = useState(false);
   const [isCheckingInteractions, setIsCheckingInteractions] = useState(false);
   const [checkResult, setCheckResult] = useState("");
+
+  // NEW: Rating state mapping
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [ratingScore, setRatingScore] = useState(5);
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
 
   const isInitialMount = useRef(true);
 
@@ -89,7 +96,7 @@ const MeetingRoom = () => {
   };
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io(import.meta.env.VITE_BACKEND_ROUTE);
 
     socket.current.on("connect", () => {
       console.log("connected");
@@ -168,8 +175,27 @@ const MeetingRoom = () => {
       });
       navigate("/connect");
     } else {
-      navigate(`/medicines/${roomID}`);
+      // Pop rating instead of leaving instantly
+      setShowRatingModal(true);
     }
+  };
+
+  const submitRatingAndLeave = async () => {
+    if (appointmentDetails?.doctorID?._id) {
+      try {
+        setIsSubmittingRating(true);
+        await rateDoctor(appointmentDetails.doctorID._id, { rating: ratingScore });
+      } catch (e) {
+        console.error("Failed to rate doctor:", e);
+      } finally {
+        setIsSubmittingRating(false);
+      }
+    }
+    navigate(`/medicines/${roomID}`);
+  };
+
+  const skipRatingAndLeave = () => {
+    navigate(`/medicines/${roomID}`);
   };
 
   const handleNotesChange = (e) => {
@@ -720,6 +746,52 @@ const MeetingRoom = () => {
         <div className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur-sm text-white px-5 py-2.5 rounded-full shadow-2xl flex items-center gap-3 z-[150] poppins-regular text-sm animate-fade-in-up border border-gray-700 transition-all duration-300">
           <div className="w-2 h-2 bg-green-400 rounded-full shadow-[0_0_8px_rgba(74,222,128,0.8)]"></div>
           Saved automatically
+        </div>
+      )}
+
+      {/* NEW: Rating Modal for Patient */}
+      {showRatingModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/60 backdrop-blur-sm p-4 animate-fade-in transition-opacity">
+          <div className="bg-white rounded-3xl w-full max-w-sm p-6 flex flex-col gap-4 shadow-2xl transform scale-100 animate-fade-in-up items-center text-center">
+            <h2 className="text-xl poppins-semibold text-gray-900 mb-1">
+              Rate your Session
+            </h2>
+            <p className="text-sm text-gray-500 inter-regular mb-2">
+              How was your experience with Dr. {appointmentDetails?.doctorID?.name || "this specific Doctor"}?
+            </p>
+            
+            <div className="flex justify-center gap-2 mb-4">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRatingScore(star)}
+                  className="transition-transform hover:scale-110 active:scale-95"
+                >
+                  <Star 
+                    size={40} 
+                    className={star <= ratingScore ? "fill-yellow-400 text-yellow-400" : "fill-gray-100 text-gray-300"} 
+                  />
+                </button>
+              ))}
+            </div>
+
+            <div className="flex w-full gap-3 mt-2 border-t border-gray-100 pt-5">
+              <button
+                onClick={skipRatingAndLeave}
+                disabled={isSubmittingRating}
+                className="flex-1 py-3 rounded-xl text-sm poppins-semibold text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
+              >
+                Skip
+              </button>
+              <button
+                onClick={submitRatingAndLeave}
+                disabled={isSubmittingRating}
+                className="flex-1 py-3 rounded-xl text-sm poppins-semibold bg-[#4285f4] hover:bg-[#3367d6] text-white transition-colors cursor-pointer flex justify-center items-center gap-2"
+              >
+                {isSubmittingRating ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : "Submit"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

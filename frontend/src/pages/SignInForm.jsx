@@ -3,6 +3,7 @@ import { login, getMe } from "../api/auth";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../layouts/AuthLayout";
+import { useToast } from "../components/ToastContext";
 
 const buttonClasses = `w-full text-white bg-gradient-to-r from-blue-600 to-indigo-600 font-bold rounded-2xl text-[15px] px-5 py-4 text-center transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_12px_25px_-8px_rgba(79,70,229,0.5)] active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed`;
 
@@ -11,6 +12,7 @@ const buttonForGFT = `flex justify-center items-center w-full rounded-2xl border
 const SignInForm = () => {
   const { Login } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   
   const [formData, setFormData] = useState({
     email: "",
@@ -36,9 +38,11 @@ const SignInForm = () => {
       await login(formData);
       const res = await getMe();
       Login(res.data.user);
+      showToast("Signed in successfully!", "success");
       navigate("/profile");
     } catch (error) {
       setErrorMessage(error.message);
+      showToast(error.message || "Sign in failed.", "error");
     } finally {
       setIsLoading(false);
     }

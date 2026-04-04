@@ -60,7 +60,7 @@ const Connect = () => {
     setIsAnalyzing(true);
     setRecommendedSpec(null);
     try {
-      const res = await fetch('http://127.0.0.1:5500/api/analyze-symptoms', {
+      const res = await fetch(`${import.meta.env.VITE_AI_ROUTE}/api/analyze-symptoms`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ symptoms })
@@ -280,7 +280,21 @@ const Connect = () => {
                 </button>
               </form>
 
-              <div className="relative flex items-center py-8">
+              <div className="relative flex items-center py-6">
+                <div className="grow border-t border-slate-100"></div>
+                <span className="shrink-0 mx-4 text-slate-300 font-black text-xs uppercase tracking-widest">OR</span>
+                <div className="grow border-t border-slate-100"></div>
+              </div>
+
+              <button
+                onClick={handleGeneralDoctor}
+                className="w-full py-4 px-4 cursor-pointer rounded-xl font-black text-slate-700 bg-white border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 shadow-sm"
+              >
+                <Activity size={20} className="text-blue-500" />
+                Talk to a General Doctor
+              </button>
+
+              <div className="relative flex items-center py-6">
                 <div className="grow border-t border-slate-100"></div>
                 <span className="shrink-0 mx-4 text-slate-300 font-black text-xs uppercase tracking-widest">OR</span>
                 <div className="grow border-t border-slate-100"></div>
@@ -355,14 +369,6 @@ const Connect = () => {
                   </div>
                 )}
                 
-                <div className="mt-4 text-center">
-                  <button
-                    onClick={handleGeneralDoctor}
-                    className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors uppercase tracking-wider"
-                  >
-                    Or skip straight to a General Doctor
-                  </button>
-                </div>
               </div>
             </div>
 

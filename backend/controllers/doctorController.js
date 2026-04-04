@@ -54,4 +54,31 @@ exports.getDoctorDetails = async (req, res) => {
     } catch (error) {
         return res.status(500).send({ msg: error.message });
     }
-};      
+};
+
+exports.rateDoctor = async (req, res) => {
+    try {
+        const { rating } = req.body;
+        const doctorId = req.params.id;
+
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).send({ msg: "Please provide a valid rating between 1 and 5." });
+        }
+
+        const doctor = await Doctor.findById(doctorId);
+        if (!doctor) {
+            return res.status(404).send({ msg: "Doctor not found." });
+        }
+
+        const newCount = doctor.totalRatingsCount + 1;
+        const newRating = ((doctor.rating * doctor.totalRatingsCount) + rating) / newCount;
+
+        doctor.rating = newRating;
+        doctor.totalRatingsCount = newCount;
+
+        await doctor.save();
+        return res.status(200).send({ msg: "Doctor rated successfully ✅", rating: doctor.rating });
+    } catch (error) {
+        return res.status(500).send({ msg: error.message });
+    }
+};

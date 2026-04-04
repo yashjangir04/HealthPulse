@@ -9,9 +9,9 @@ const getCoordinates = require("../utils/getCoordinates");
 const setTokenCookie = require("../utils/setTokenCookie");
 
 exports.doctorSignUp = async (req, res) => {
-    const { name, email, password, dob, gender, phoneNumber, specialization, address, qualification, university } = req.body;
+    const { name, email, password, dob, gender, phoneNumber, specialization, address, qualification, university, hpId } = req.body;
 
-    if (!name || !email || !password || !dob || !gender || !phoneNumber || !specialization || !address || !qualification || !university) {
+    if (!name || !email || !password || !dob || !gender || !phoneNumber || !specialization || !address || !qualification || !university || !hpId) {
         return res.status(400).send({ msg: "Please provide all the required fields ❌" });
     }
     const hashedPassword = await hashPassword(password);
@@ -25,7 +25,7 @@ exports.doctorSignUp = async (req, res) => {
 
     try {
         await new Doctor({
-            name, email, password: hashedPassword, dob, gender, phoneNumber, specialization, address, qualification, university
+            name, email, password: hashedPassword, dob, gender, phoneNumber, specialization, hpId, address, qualification, university
         }).save();
         return res.status(201).send({ msg: "Doctor created successfully ✅" });
     } catch (error) {
