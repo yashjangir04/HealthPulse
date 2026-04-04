@@ -28,6 +28,7 @@ const appointmentRouter = require("./routes/appointmentRouter") ;
 const medicationRouter = require("./routes/medicationRouter") ;
 const orderRouter = require("./routes/orderRouter") ;
 const authMiddleware = require("./middlewares/authMiddleware");
+// const reportRouter = require("./routes/reportRouter");
 
 const io = new Server(server,
     {
@@ -46,12 +47,13 @@ app.use(cookieParser());
 socketHandler(io) ;
 
 // Routes
-app.use("/api/auth", authMiddleware , authRouter);
-app.use("/api/communicate" , authMiddleware , communicationRouter) ;
-app.use("/api/patient" , authMiddleware , patientRouter) ;
-app.use("/api/appointment" , authMiddleware , appointmentRouter) ;
-app.use("/api/medications" , authMiddleware , medicationRouter) ;
-app.use("/api/orders" , authMiddleware , orderRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/communicate" , communicationRouter) ;
+app.use("/api/patient" , patientRouter) ;
+app.use("/api/appointment" , appointmentRouter) ;
+app.use("/api/medications" , medicationRouter) ;
+app.use("/api/orders" , orderRouter) ;
+// app.use('/api/reports', reportRouter);
 
 // Health Route
 app.get("/health", (req, res) => {

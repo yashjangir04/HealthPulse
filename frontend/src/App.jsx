@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 
 import SignInForm from "./pages/SignInForm";
 
+import Connect from "./pages/Connect" ;
 // import StepForm from "./pages/StepFormDoctor";
 // import StepFormPatient from "./pages/StepFormPatient";
 // import StepFormShopkeeper from "./pages/StepFormShopkeeper";
@@ -107,7 +108,7 @@ function App() {
           }
         ></Route>
 
-        {/* <Route
+        <Route
           path="/connect"
           element={
             <MainLayout
@@ -118,7 +119,7 @@ function App() {
               <Connect />
             </MainLayout>
           }
-        ></Route> */}
+        ></Route>
 
         <Route
           path="/contact"

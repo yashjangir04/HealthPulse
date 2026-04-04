@@ -9,6 +9,7 @@ const getCoordinates = require("../utils/getCoordinates");
 const setTokenCookie = require("../utils/setTokenCookie");
 
 exports.doctorSignUp = async (req, res) => {
+    console.log("here");
     const { name, email, password, dob, gender, phoneNumber, specialization, address, qualification, university } = req.body;
 
     if (!name || !email || !password || !dob || !gender || !phoneNumber || !specialization || !address || !qualification || !university) {
@@ -87,6 +88,8 @@ exports.shopkeeperSignUp = async (req, res) => {
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
+    // console.log();
+    
 
     if (!email || !password) {
         return res.status(400).send({ msg: "Please provide all the required fields ❌" });
