@@ -1,4 +1,4 @@
-  import { supabase } from '../supabaseClient';
+import { supabase } from '../SupabaseClient';
   import React, { useState, useRef, useEffect } from 'react';
   import EditProfileModal from '../components/EditProfileModal';
   import MedicationManagerModal from '../components/MedicationManagerModal';
@@ -115,9 +115,8 @@ const response = await axios.post('/api/analyze-report', {
   userId: userData.email
 });
 
-      const result = await response.json();
-
-      if (!result.success) throw new Error("AI failed");
+const result = response.data;
+if (!result.success) throw new Error("AI failed");
 
       const { error: dbError } = await supabase
         .from('reports')
