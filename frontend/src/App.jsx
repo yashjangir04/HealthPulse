@@ -1,12 +1,25 @@
-import React from 'react'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Landing from "./pages/Landing";
 import MainLayout from "./layouts/MainLayout";
-import Signup from './pages/Signup';
-import MedicineDelivery from "./pages/MedicineDelivery";
+import Authentication from "./pages/SignInForm";
+import Landing from "./pages/Landing";
+import MediList from "./pages/MediList";
+import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/ContactPage";
+import MedicineDelivery from "./pages/MedicineDelivery";
+import ProtectedRoute from "./ProtectedRoute";
 
-const App = () => {
+import SignInForm from "./pages/SignInForm";
+
+// import StepForm from "./pages/StepFormDoctor";
+// import StepFormPatient from "./pages/StepFormPatient";
+// import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+import Lobby from "./pages/Lobby";
+import Appointments from "./pages/Appointments";
+import Signup from "./pages/Signup";
+import PatientOrders from "./pages/PatientOrders";
+import ChatPage from "./pages/ChatPage";
+
+function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -22,8 +35,8 @@ const App = () => {
             </MainLayout>
           }
         />
- 
-                  <Route
+
+        <Route
           path="/about"
           element={
             <MainLayout
@@ -38,7 +51,76 @@ const App = () => {
           }
         />
 
-                <Route
+        <Route
+          path="/meeting/:roomID"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <MeetingRoom />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/appointments"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Appointments />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/lobby/:speciality"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Lobby />
+            </MainLayout>
+          }
+        />
+
+        <Route path="/account/:mode" element={<Authentication />} />
+
+        <Route
+          path="/medi-list"
+          element={
+            <ProtectedRoute>
+              <MainLayout
+                showNavbar={false}
+                showSidebar={true}
+                isFullHeighted={true}
+              >
+                <MediList />
+              </MainLayout>
+            </ProtectedRoute>
+          }
+        ></Route>
+
+        {/* <Route
+          path="/connect"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <Connect />
+            </MainLayout>
+          }
+        ></Route> */}
+
+        <Route
           path="/contact"
           element={
             <MainLayout
@@ -50,6 +132,135 @@ const App = () => {
             </MainLayout>
           }
         ></Route>
+
+        <Route
+          path="/medicines/:meetingID"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <MedicineDelivery />
+            </MainLayout>
+          }
+        ></Route>
+
+        {/* <Route
+          path="/profile"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <ProfilePage />
+            </MainLayout>
+          }
+        ></Route> */}
+
+        <Route
+          path="/account/register"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <Signup />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/login"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <SignInForm />
+            </MainLayout>
+          }
+        ></Route>
+        {/* <Route
+          path="/stepform"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepForm />
+            </MainLayout>
+          }
+        ></Route> */}
+        {/* <Route
+          path="/stepformPatient"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepFormPatient />
+            </MainLayout>
+          }
+        ></Route> */}
+        {/* <Route
+          path="/stepformShopkeeper"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={true}
+            >
+              <StepFormShopkeeper />
+            </MainLayout>
+          }
+        ></Route> */}
+
+        {/* <Route
+          path="/shopkeeper/orders"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <ShopkeeperOrders />
+            </MainLayout>
+          }
+        ></Route> */}
+
+        <Route
+          path="/patient/orders"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <PatientOrders />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/ai-help"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <ChatPage />
+            </MainLayout>
+          }
+        ></Route>
+        
+
       </Routes>
     </BrowserRouter>
   );

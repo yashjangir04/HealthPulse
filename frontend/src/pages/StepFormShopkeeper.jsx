@@ -3,10 +3,10 @@ import Stepper from "../components/Stepper";
 import StepperControl from "../components/StepperControl";
 import ShopAccount from "../components/steps/ShopAccount";
 import ShopAddress from "../components/steps/ShopAddress";
-import ShopDetails from "../components/steps/ShopDetails";
+import ShopDetails from "../components/steps/ShopDetail";
 import ShopFinal from "../components/steps/ShopFinal";
 import {signupShopkeeper} from "../api/auth";
-import AuthLayout from "../layouts/AuthLayout";
+import AuthLayout from "../layouts/";
 import { useNavigate } from 'react-router-dom';
 
 const StepFormShopkeeper = () => {
