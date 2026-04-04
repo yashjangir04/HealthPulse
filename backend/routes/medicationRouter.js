@@ -4,7 +4,7 @@ const {
   getMedications,
   deleteMedication, 
   updateStatus,
-  getPrescribedMedications
+  getPrescribedMedications,
 } = require("../controllers/medicationController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
@@ -17,5 +17,6 @@ router.patch("/update-status", authMiddleware, updateStatus);
 router.delete("/:id", authMiddleware, deleteMedication);
 
 router.post('/fetch' , authMiddleware , getPrescribedMedications);
+
 
 module.exports = router;
