@@ -137,6 +137,8 @@ exports.login = async (req, res) => {
 };
 
 exports.getMe = async (req, res) => {
+    console.log(req.user);
+    
     try {
         let user = await Doctor.findById(req.user.id)
             .select("-password")
