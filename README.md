@@ -97,8 +97,10 @@ VITE_ZC_SERVER_SECRET=your_zegocloud_server_secret
 VITE_ZC_APP_ID=your_zegocloud_app_id
 VITE_BACKEND_ROUTE=http://localhost:5000
 VITE_AI_ROUTE=http://127.0.0.1:5500
+VITE_VOICE_ROUTE=http://127.0.0.1:5501
 VITE_SUPABASE_URL=your_supabase_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_BASE_URL=your_base_url
 ```
 
 Then start the dev server:
