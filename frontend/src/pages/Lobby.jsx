@@ -68,7 +68,7 @@ const Lobby = () => {
   }, [navigate, user, speciality, isDoctor]);
 
   const handleCancel = () => {
-    navigate(-1); // go to previous route/page
+    navigate(-1); 
   };
 
   const handleTryAgain = () => {
@@ -85,8 +85,7 @@ const Lobby = () => {
   return (
     <div className="min-h-screen bg-[#FAFCFF] font-sans text-gray-900 pt-24 pb-32">
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Header Section with Profile Badge (Matching other pages) */}
+       
         <div className="mb-10 flex flex-col sm:flex-row sm:items-start justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50 mb-4">
