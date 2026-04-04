@@ -189,7 +189,7 @@ function App() {
           }
         ></Route>
         <Route
-          path="/stepform"
+          path="/stepformDoctor"
           element={
             <MainLayout
               showNavbar={false}
