@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import Sidebar from '../components/Sidebar';
+import VoiceAssistant from '../components/VoiceAssistant';
 
 const MainLayout = ({ children, showNavbar = true, showSidebar = true, isFullHeighted = true }) => {
   // initialize state from localStorage so it remembers the user's choice across pages
@@ -64,6 +65,7 @@ const MainLayout = ({ children, showNavbar = true, showSidebar = true, isFullHei
           </div>
         </main>
       </div>
+      <VoiceAssistant />
     </div>
   );
 };
