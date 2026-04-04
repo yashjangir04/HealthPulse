@@ -19,6 +19,7 @@ import ShopkeeperOrders from "./pages/ShopkeeperOrders";
 import PatientOrders from "./pages/PatientOrders";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
+import DoctorsList from "./pages/DoctorsList";
 
 function App() {
   return (
@@ -244,6 +245,19 @@ function App() {
               isFullHeighted={true}
             >
               <PatientOrders />
+            </MainLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/doctors-list"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={true}
+              isFullHeighted={true}
+            >
+              <DoctorsList />
             </MainLayout>
           }
         ></Route>

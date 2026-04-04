@@ -12,26 +12,41 @@ import { useNavigate } from "react-router-dom";
 
 
 // --- Custom component for automatic & mouse-tracked rotation ---
+// --- Custom component for automatic & mouse-tracked rotation ---
 function InteractiveModel({ children }) {
   const groupRef = useRef();
+  
+  // Starting speed of the initial spin. Higher = faster initial spin.
+  const spinVelocity = useRef(40); 
+  
+  // Accumulates the extra rotation angle from the initial spin
+  const spinAngle = useRef(0); 
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    const time = state.clock.getElapsedTime();
+    // 1. Smoothly decelerate the spin velocity down to 0 over time.
+    // The multiplier '3' controls how quickly it slows down (acts like friction).
+    spinVelocity.current -= spinVelocity.current * 3 * delta;
+    
+    // Once it gets extremely slow, lock it to 0 to save performance
+    if (spinVelocity.current < 0.01) spinVelocity.current = 0;
 
-    // 1. Get mouse coordinates relative to the canvas (-1 to 1)
+    // 2. Add the current velocity to our accumulated intro angle
+    spinAngle.current += spinVelocity.current * delta;
+
+    // 3. Standard interactive tracking
+    const time = state.clock.getElapsedTime();
     const targetX = (state.pointer.x * Math.PI) / 4;
     const targetY = (state.pointer.y * Math.PI) / 4;
 
-    // 2. Add base continuous rotation (speed 0.5) + the mouse offset
-    const expectedY = time * 0.5 + targetX;
+    // 4. The magic: Combine base rotation, mouse position, AND the decaying intro spin
+    const expectedY = (time * 0.5) + targetX + spinAngle.current;
 
-    // 3. Smoothly interpolate the rotation so it glides naturally
-    groupRef.current.rotation.y +=
-      (expectedY - groupRef.current.rotation.y) * 0.05;
-    groupRef.current.rotation.x +=
-      (-targetY - groupRef.current.rotation.x) * 0.05;
+    // 5. Apply smooth interpolation so it glides perfectly
+    // (Increased the lerp factor slightly from 0.05 to 0.08 so the fast spin tracks tighter)
+    groupRef.current.rotation.y += (expectedY - groupRef.current.rotation.y) * 0.08;
+    groupRef.current.rotation.x += (-targetY - groupRef.current.rotation.x) * 0.08;
   });
 
   return <group ref={groupRef}>{children}</group>;
