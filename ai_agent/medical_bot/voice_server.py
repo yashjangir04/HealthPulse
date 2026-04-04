@@ -46,7 +46,7 @@ LANG_MAP = {
 SYSTEM_PROMPT = """You are an intent classification assistant for a medical health application called HealthPulse.
 Your ONLY job is to output a single raw JSON object. Never use markdown formatting.
 
-Given the user's voice command (already translated to English), classify it:
+Given the user's voice command (which may be in any Indian language or English), classify it and provide an English translation:
 
 NAVIGATION ROUTES (when user wants to GO somewhere):
 1. /lobby/general        → Call a general doctor, talk to a doctor, emergency, need help
@@ -64,11 +64,12 @@ NAVIGATION ROUTES (when user wants to GO somewhere):
 
 CHATBOT MEDICAL QUERIES (when user asks a medical/health question like symptoms, pain, remedies, advice):
 - Use path "/ai-help"
-- Set "chatMessage" to the ORIGINAL translated English question so the chatbot can answer it.
-- Examples: "my head is aching what should I do", "I have fever", "what is diabetes", "I feel chest pain", "what medicine for cold"
+- Set "chatMessage" to the EXACT ORIGINAL un-translated question so the human can see what they asked.
+- Set "englishTranslation" to an English translation of the question so our backend can process it.
+- Examples of chatMessage: "mujhe bukhar hai", "thalai vali", "what is diabetes"
 
 Return ONLY this JSON (no markdown):
-{"action": "navigate", "path": "<route>", "message": "<brief friendly English acknowledgement>", "chatMessage": "<the medical question if going to ai-help, else empty string>"}
+{"action": "navigate", "path": "<route>", "message": "<brief friendly English acknowledgement>", "chatMessage": "<the medical question exactly as spoken in original language>", "englishTranslation": "<the english translation of the question>"}
 """
 
 
@@ -98,6 +99,8 @@ def classify_intent(english_text):
         result = json.loads(raw)
         if "chatMessage" not in result:
             result["chatMessage"] = ""
+        if "englishTranslation" not in result:
+            result["englishTranslation"] = result["chatMessage"]
         return result
     except Exception as e:
         print(f"[Groq Intent Error] {e}")
@@ -131,14 +134,14 @@ def voice_command():
 
         sarvam = SarvamAI(api_subscription_key=sarvam_key)
 
-        # Transcribe + translate to English, also detect language
+        # Transcribe in native language (don't force translation)
         with open(tmp_path, "rb") as f:
             stt_resp = sarvam.speech_to_text.transcribe(
-                file=f, model="saaras:v3", mode="translate"
+                file=f, model="saaras:v3"
             )
         os.unlink(tmp_path)
 
-        # Extract translated text
+        # Extract raw native text
         if hasattr(stt_resp, "transcript"):
             translated = stt_resp.transcript
         elif hasattr(stt_resp, "translated_text"):
@@ -158,7 +161,7 @@ def voice_command():
         print(f"[Sarvam] Translated: {translated} | Lang: {detected_lang}")
 
         intent = classify_intent(translated)
-        intent["translatedText"] = translated
+        intent["originalText"] = translated
         intent["detectedLanguage"] = detected_lang
 
         print(f"[Groq]   Intent: {intent}")
@@ -193,44 +196,23 @@ def text_to_speech():
             "Content-Type": "application/json",
         }
 
-        # Step 1: Translate English answer → user's language (skip if already English)
-        translated_text = text
-        if lang_code != "en":
-            try:
-                translate_payload = {
-                    "input": text[:1000],
-                    "source_language_code": "en-IN",
-                    "target_language_code": target_lang,
-                    "speaker_gender": "Female",
-                    "mode": "formal",
-                    "model": "mayura:v1",
-                    "enable_preprocessing": False,
-                }
-                tr = http_requests.post(
-                    "https://api.sarvam.ai/translate",
-                    headers=headers,
-                    json=translate_payload,
-                    timeout=20,
-                )
-                tr.raise_for_status()
-                tr_data = tr.json()
-                translated_text = tr_data.get("translated_text", text)
-                print(f"[Translate] {lang_code}: {translated_text[:80]}...")
-            except Exception as te:
-                print(f"[Translate Warning] Falling back to English text: {te}")
-                translated_text = text   # fallback: speak English if translate fails
+        # The AI Chatbot already replies natively in the target language
+        # We can bypass translation and just convert text to speech
+        import re
+        clean_text = re.sub(r'[*_#]+', '', text).strip()
+        translated_text = clean_text
 
         # Step 2: TTS the translated text
         tts_payload = {
             "inputs": [translated_text[:500]],
             "target_language_code": target_lang,
-            "speaker": "meera",
+            "speaker": "anushka",
             "pitch": 0,
             "pace": 1.0,
             "loudness": 1.5,
             "speech_sample_rate": 22050,
             "enable_preprocessing": True,
-            "model": "bulbul:v1",
+            "model": "bulbul:v2",
         }
         res = http_requests.post(
             "https://api.sarvam.ai/text-to-speech",

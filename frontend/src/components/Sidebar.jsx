@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { useLanguage } from "../utils/LanguageContext";
 import {
   User,
   Sparkles,
@@ -25,6 +26,7 @@ const Sidebar = ({
 }) => {
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const getInitials = (name) => {
     if (!name) return "U";
@@ -53,15 +55,15 @@ const Sidebar = ({
   const getMenuItems = () => {
 
     const allItems = {
-      profile: { icon: <User size={20} />, label: "Profile", path: "/profile" },
-      aiHelp: { icon: <Sparkles size={20} />, label: "AI Help", path: "/ai-help" },
-      reports: { icon: <FileText size={20} />, label: "Reports", path: "/reports" },
-      contacts: { icon: <Users size={20} />, label: "Contacts", path: "/contact" },
-      reminder: { icon: <Bell size={20} />, label: "Reminder", path: "/medi-list" },
-      appointments: { icon: <Calendar size={20} />, label: "Appointments", path: "/appointments" },
-      connect: { icon: <UserRound size={20} />, label: "Connect", path: "/connect" },
-      shopkeeperOrders: { icon: <ShoppingBag size={20} />, label: "Orders", path: "/shopkeeper/orders" }, 
-      patientOrders: { icon: <ShoppingBag size={20} />, label: "My Orders", path: "/patient/orders" }, 
+      profile: { icon: <User size={20} />, label: t("profile"), path: "/profile" },
+      aiHelp: { icon: <Sparkles size={20} />, label: t("aiHelp"), path: "/ai-help" },
+      reports: { icon: <FileText size={20} />, label: t("reports"), path: "/reports" },
+      contacts: { icon: <Users size={20} />, label: t("contacts"), path: "/contact" },
+      reminder: { icon: <Bell size={20} />, label: t("reminder"), path: "/medi-list" },
+      appointments: { icon: <Calendar size={20} />, label: t("appointments"), path: "/appointments" },
+      connect: { icon: <UserRound size={20} />, label: t("connect"), path: "/connect" },
+      shopkeeperOrders: { icon: <ShoppingBag size={20} />, label: t("orders"), path: "/shopkeeper/orders" }, 
+      patientOrders: { icon: <ShoppingBag size={20} />, label: t("myOrders"), path: "/patient/orders" }, 
     };
 
     switch (user?.role) {
@@ -175,7 +177,7 @@ const Sidebar = ({
                     <span className="font-extrabold text-gray-900 truncate text-[14px]">
                       {displayName}
                     </span>
-                    <span className="text-[10px] text-green-500 font-bold uppercase">Online</span>
+                    <span className="text-[10px] text-green-500 font-bold uppercase">{t("online")}</span>
                   </div>
                 )}
               </div>
@@ -187,7 +189,7 @@ const Sidebar = ({
                   ${isCollapsed && !isOpen ? "justify-center w-10 h-10 p-0" : "w-full"}`}
               >
                 <LogOut size={20} strokeWidth={2.5} />
-                {(!isCollapsed || isOpen) && <span>Logout</span>}
+                {(!isCollapsed || isOpen) && <span>{t("logout")}</span>}
               </button>
             </div>
           ) : (
@@ -199,7 +201,7 @@ const Sidebar = ({
                 ${isCollapsed && !isOpen ? "w-10 h-10" : "w-full py-3.5 gap-2"}`}
             >
               <LogIn size={20} />
-              {(!isCollapsed || isOpen) && <span>Login</span>}
+              {(!isCollapsed || isOpen) && <span>{t("login")}</span>}
             </button>
           )}
         </div>

@@ -2,8 +2,10 @@ import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from 'react-icons/fa';
 import logo from '../assets/logo.svg'; 
 import plusIcon from '../assets/plus.svg';
+import { useLanguage } from '../utils/LanguageContext';
 
 const Footer = () => {
+  const { t } = useLanguage();
   return (
     <footer className="w-full bg-transparent">
       <div className="w-full bg-white p-8 sm:p-12 md:p-16 lg:p-20 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] border-t border-gray-100">
@@ -25,7 +27,7 @@ const Footer = () => {
             </div>
             
             <p className="text-gray-500 mb-8 leading-relaxed font-medium">
-              Empowering your healthcare journey with modern, intuitive, and secure digital health solutions.
+              {t("footerDesc")}
             </p>
             
             <div className="flex gap-3">
@@ -48,29 +50,29 @@ const Footer = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">Product</h4>
+            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">{t("product")}</h4>
             <ul className="space-y-4 text-gray-500 font-medium">
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Features</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Pricing</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Case studies</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Reviews</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Updates</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("features")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("pricing")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("caseStudies")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("reviews")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("updates")}</span></li>
             </ul>
           </div>
 
           <div className="lg:col-span-2">
-            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">Support</h4>
+            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">{t("support")}</h4>
             <ul className="space-y-4 text-gray-500 font-medium">
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Getting started</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Help center</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Server status</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Report a bug</span></li>
-              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">Chat support</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("gettingStarted")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("helpCenter")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("serverStatus")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("reportBug")}</span></li>
+              <li><span className="hover:text-blue-600 transition-colors cursor-pointer">{t("chatSupport")}</span></li>
             </ul>
           </div>
 
           <div className="lg:col-span-4">
-            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">Contact Us</h4>
+            <h4 className="text-gray-900 font-bold text-lg mb-6 tracking-wide">{t("contactUs")}</h4>
             <ul className="space-y-5 text-gray-500 font-medium">
               <li className="flex items-center gap-4 group cursor-pointer">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shrink-0">
@@ -97,10 +99,10 @@ const Footer = () => {
         </div>
 
         <div className="mt-16 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left text-gray-400 font-medium text-sm">
-          <p>Copyright © 2026 HealthPulse. All Rights Reserved.</p>
+          <p>{t("copyright")}</p>
           <div className="flex flex-wrap justify-center gap-6">
-            <span className="hover:text-blue-600 transition-colors cursor-pointer">Terms & Conditions</span>
-            <span className="hover:text-blue-600 transition-colors cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-blue-600 transition-colors cursor-pointer">{t("termsConditions")}</span>
+            <span className="hover:text-blue-600 transition-colors cursor-pointer">{t("privacyPolicy")}</span>
           </div>
         </div>
       </div>

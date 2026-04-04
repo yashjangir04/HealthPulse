@@ -3,6 +3,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useLocation } from "react-router-dom";
 import { Send, Bot, Sparkles, User as UserIcon, Loader2, Volume2, Mic, MicOff } from "lucide-react";
 import { populateDB, resetDB, askQuestion } from "../api/bot";
+import { useLanguage } from "../utils/LanguageContext";
 
 const INITIAL_MESSAGES = [
   {
@@ -16,6 +17,7 @@ const INITIAL_MESSAGES = [
 const ChatPage = () => {
   const { isLoggedIn, loading, user } = useAuth();
   const location = useLocation();
+  const { t } = useLanguage();
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -85,7 +87,7 @@ const ChatPage = () => {
   }, []);
 
   // ─── Core send logic (reusable) ───────────────────────────────────
-  const sendMessage = useCallback(async (text, autoSpeak = false) => {
+  const sendMessage = useCallback(async (text, autoSpeak = false, englishText = null) => {
     if (!text.trim()) return;
 
     const newUserMsg = {
@@ -99,7 +101,10 @@ const ChatPage = () => {
     setIsTyping(true);
 
     try {
-      const response = await askQuestion({ question: text });
+      const response = await askQuestion({ 
+          question: text, 
+          english_question: englishText || text 
+      });
       const data = response.data;
       const aiText = data.response || "Sorry, I couldn't process that response.";
 
@@ -142,7 +147,7 @@ const ChatPage = () => {
       // Store the detected language for TTS reply
       if (state.detectedLanguage) voiceLangRef.current = state.detectedLanguage;
       // Small delay so the page finishes rendering first
-      const t = setTimeout(() => sendMessage(state.voiceQuery, true), 600);
+      const t = setTimeout(() => sendMessage(state.voiceQuery, true, state.englishQuery), 600);
       // Clear state so refreshing doesn't re-submit
       window.history.replaceState({}, "");
       return () => clearTimeout(t);
@@ -182,12 +187,12 @@ const ChatPage = () => {
 
           if (data.chatMessage) {
             voiceLangRef.current = data.detectedLanguage || "hi";
-            sendMessage(data.chatMessage, true);
+            sendMessage(data.chatMessage, true, data.englishTranslation);
           } else {
-            // Even if the intent is not a pure chat message, if we are in chat just send the translated text
-            if (data.translatedText) {
+            // Even if the intent is not a pure chat message, if we are in chat just send the text
+            if (data.originalText) {
               voiceLangRef.current = data.detectedLanguage || "hi";
-              sendMessage(data.translatedText, true);
+              sendMessage(data.originalText, true, data.englishTranslation);
             }
           }
         } catch (err) {
@@ -247,9 +252,9 @@ const ChatPage = () => {
               <Sparkles size={20} />
             </div>
             <div>
-              <h2 className="font-bold text-slate-800 text-lg leading-tight">AI Health Assistant</h2>
+              <h2 className="font-bold text-slate-800 text-lg leading-tight">{t("aiHealthAssistant")}</h2>
               <p className="text-xs font-medium text-emerald-500 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {t("chatOnline")}
               </p>
             </div>
           </div>
@@ -331,7 +336,7 @@ const ChatPage = () => {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder={t("typeMessage")}
               className="flex-1 max-h-32 min-h-[44px] bg-transparent resize-none outline-none text-[15px] text-slate-800 placeholder:text-slate-400 py-2.5"
               rows={1}
             />
@@ -357,7 +362,7 @@ const ChatPage = () => {
           </form>
           <div className="text-center mt-3">
              <p className="text-[10px] font-medium text-slate-400">
-               AI can make mistakes. Please verify important medical information.
+               {t("aiDisclaimer")}
              </p>
           </div>
         </div>
