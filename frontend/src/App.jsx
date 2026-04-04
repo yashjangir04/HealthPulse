@@ -7,16 +7,18 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/ContactPage";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
+import ProfilePage from "./pages/ProfilePage";
+import Connect from "./pages/Connect";
 
 import SignInForm from "./pages/SignInForm";
 
-import Connect from "./pages/Connect" ;
-// import StepForm from "./pages/StepFormDoctor";
-// import StepFormPatient from "./pages/StepFormPatient";
-// import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+import StepForm from "./pages/StepFormDoctor";
+import StepFormPatient from "./pages/StepFormPatient";
+import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 import Lobby from "./pages/Lobby";
 import Appointments from "./pages/Appointments";
 import Signup from "./pages/Signup";
+import ShopkeeperOrders from "./pages/ShopkeeperOrders";
 import PatientOrders from "./pages/PatientOrders";
 import ChatPage from "./pages/ChatPage";
 
@@ -147,7 +149,7 @@ function App() {
           }
         ></Route>
 
-        {/* <Route
+        <Route
           path="/profile"
           element={
             <MainLayout
@@ -158,7 +160,7 @@ function App() {
               <ProfilePage />
             </MainLayout>
           }
-        ></Route> */}
+        ></Route>
 
         <Route
           path="/account/register"
@@ -185,7 +187,7 @@ function App() {
             </MainLayout>
           }
         ></Route>
-        {/* <Route
+        <Route
           path="/stepform"
           element={
             <MainLayout
@@ -196,8 +198,8 @@ function App() {
               <StepForm />
             </MainLayout>
           }
-        ></Route> */}
-        {/* <Route
+        ></Route>
+        <Route
           path="/stepformPatient"
           element={
             <MainLayout
@@ -208,8 +210,8 @@ function App() {
               <StepFormPatient />
             </MainLayout>
           }
-        ></Route> */}
-        {/* <Route
+        ></Route>
+        <Route
           path="/stepformShopkeeper"
           element={
             <MainLayout
@@ -220,9 +222,9 @@ function App() {
               <StepFormShopkeeper />
             </MainLayout>
           }
-        ></Route> */}
+        ></Route>
 
-        {/* <Route
+        <Route
           path="/shopkeeper/orders"
           element={
             <MainLayout
@@ -233,7 +235,7 @@ function App() {
               <ShopkeeperOrders />
             </MainLayout>
           }
-        ></Route> */}
+        ></Route>
 
         <Route
           path="/patient/orders"
