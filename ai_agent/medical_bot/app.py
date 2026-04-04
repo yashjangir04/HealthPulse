@@ -1,6 +1,7 @@
 import os
 import time
 from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask_cors import CORS
 import sys
 
 try:
@@ -12,6 +13,7 @@ except Exception as e:
     sys.exit(1)
 
 app = Flask(__name__)
+CORS(app)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "super-secret-key-healthpulse")
 
 print("Initializing Knowledge Base (this may take a few moments)...")
