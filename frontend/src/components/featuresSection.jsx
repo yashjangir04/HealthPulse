@@ -1,5 +1,4 @@
-import React, { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
 import FeatureCard from "./featureCard";
 
 import recordAnalysisGraphic from "../assets/Record_Analysis.png";
@@ -9,7 +8,6 @@ import diseaseDetectionGraphic from "../assets/Disease_Detection.png";
 import aiChatGraphic from "../assets/AI_Chat_Support.png";
 import emergencyAlertsGraphic from "../assets/Emergency_Alerts.png";
 
-// Custom Health Plus SVG
 const HealthPlusIcon = ({ className }) => (
   <svg 
     viewBox="0 0 24 24" 
@@ -27,79 +25,10 @@ const HealthPlusIcon = ({ className }) => (
   </svg>
 );
 
-const InteractiveFeatureCard = ({ item, cardVariants }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  const hoverParticles = useMemo(() => {
-    const colors = [
-      "text-emerald-300", 
-      "text-green-400", 
-      "text-teal-300", 
-      "text-emerald-500", 
-      "text-lime-400"
-    ];
-    
-    return Array.from({ length: 20 }).map((_, i) => {
-
-      const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * 160 + 100;
-      
-      return {
-        id: i,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        size: Math.random() * 14 + 10,
-        xDrift: Math.cos(angle) * distance,
-        yDrift: Math.sin(angle) * distance - 40,
-        duration: Math.random() * 1.2 + 1.2,
-        delay: Math.random() * 1.5,
-        rotation: Math.random() * 360,
-      };
-    });
-  }, []);
-
+const InteractiveFeatureCard = ({ item }) => {
   return (
-    <motion.div 
-      variants={cardVariants} 
-      className="relative flex justify-center h-full w-full"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none z-0">
-        <AnimatePresence>
-          {isHovered && hoverParticles.map((p) => (
-            <motion.div
-              key={p.id}
-              className={`absolute top-1/2 left-1/2 ${p.color}`}
-              style={{ 
-                width: p.size, 
-                height: p.size, 
-                marginLeft: -p.size / 2, 
-                marginTop: -p.size / 2 
-              }}
-              initial={{ opacity: 0, scale: 0.2, x: 0, y: 0 }}
-              animate={{
-                opacity: [0, 0.8, 0], 
-                scale: [0.5, 1.2, 0.6], 
-                x: [0, p.xDrift], 
-                y: [0, p.yDrift], 
-                rotate: [0, p.rotation], 
-              }}
-              exit={{ opacity: 0, scale: 0, transition: { duration: 0.3 } }}
-              transition={{
-                duration: p.duration,
-                delay: p.delay,
-                repeat: Infinity,
-                ease: "easeOut",
-              }}
-            >
-              <HealthPlusIcon className="w-full h-full drop-shadow-md" />
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      <div className="relative z-10 w-full h-full transition-transform duration-300 ease-out hover:-translate-y-2">
+    <div className="relative flex justify-center h-full w-full">
+      <div className="relative z-10 w-full h-full">
         <FeatureCard
           title={item.title}
           description={item.description}
@@ -107,7 +36,7 @@ const InteractiveFeatureCard = ({ item, cardVariants }) => {
           altText={item.title}
         />
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -145,76 +74,9 @@ const FeaturesSection = () => {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15 },
-    },
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: "spring", stiffness: 100, damping: 12 } 
-    },
-  };
-
-  const healthParticles = useMemo(() => {
-    const colors = [
-      "text-emerald-300", 
-      "text-green-400", 
-      "text-teal-300", 
-      "text-emerald-500", 
-      "text-lime-400"
-    ];
-    
-    return Array.from({ length: 35 }).map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      size: Math.random() * 16 + 10,
-      duration: Math.random() * 8 + 8,
-      delay: Math.random() * -10,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      xDrift: (Math.random() - 0.5) * 60,
-      rotation: Math.random() * 360,
-    }));
-  }, []);
-
   return (
     <section className="relative z-10 w-full py-20 lg:py-28 px-4 sm:px-6 md:px-12 lg:px-20 overflow-hidden bg-white">
-
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-        {healthParticles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className={`absolute ${particle.color} opacity-0`}
-            style={{
-              left: particle.left,
-              width: particle.size,
-              height: particle.size,
-              bottom: "-10%",
-            }}
-            animate={{
-              y: [0, -1500],
-              x: [0, particle.xDrift, -particle.xDrift, 0], 
-              opacity: [0, 0.4, 0.6, 0], 
-              rotate: [particle.rotation, particle.rotation + 90] 
-            }}
-            transition={{
-              duration: particle.duration,
-              delay: particle.delay,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          >
-            <HealthPlusIcon className="w-full h-full drop-shadow-sm" />
-          </motion.div>
-        ))}
-      </div>
-
+      
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none overflow-hidden -z-10">
         <div className="absolute top-[10%] left-[-5%] w-75 h-75 bg-blue-100/50 rounded-full blur-[100px]"></div>
         <div className="absolute bottom-[10%] right-[-5%] w-100 h-100 bg-indigo-50/60 rounded-full blur-[120px]"></div>
@@ -241,21 +103,14 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-10 md:gap-y-12"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-10 md:gap-y-12">
           {features.map((item, index) => (
             <InteractiveFeatureCard 
               key={index} 
               item={item} 
-              cardVariants={cardVariants} 
             />
           ))}
-        </motion.div>
+        </div>
 
       </div>
     </section>
