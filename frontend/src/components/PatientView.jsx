@@ -89,66 +89,66 @@ const ProfileView = () => {
   fetchUserReports();
 }, [userData.email]); 
 
-  const handleReportUpload = async (file) => {
-    if (!file) return;
+//   const handleReportUpload = async (file) => {
+//     if (!file) return;
 
-    try {
-      // 1. Upload to Supabase
-      const fileName = `${Date.now()}-${file.name}`;
+//     try {
+//       // 1. Upload to Supabase
+//       const fileName = `${Date.now()}-${file.name}`;
 
-      const { error: storageError } = await supabase.storage
-        .from('medical-reports')
-        .upload(fileName, file);
+//       const { error: storageError } = await supabase.storage
+//         .from('medical-reports')
+//         .upload(fileName, file);
 
-      if (storageError) throw storageError;
+//       if (storageError) throw storageError;
 
-const { data } = supabase.storage
-  .from('medical-reports')
-  .getPublicUrl(fileName);
+// const { data } = supabase.storage
+//   .from('medical-reports')
+//   .getPublicUrl(fileName);
 
-const publicUrl = data?.publicUrl;
+// const publicUrl = data?.publicUrl;
 
-if (!publicUrl) throw new Error("Failed to get public URL");
+// if (!publicUrl) throw new Error("Failed to get public URL");
 
-const response = await axios.post('/api/analyze-report', {
-  reportUrl: publicUrl,
-  userId: userData.email
-});
+// const response = await axios.post('/api/analyze-report', {
+//   reportUrl: publicUrl,
+//   userId: userData.email
+// });
 
-const result = response.data;
-if (!result.success) throw new Error("AI failed");
+// const result = response.data;
+// if (!result.success) throw new Error("AI failed");
 
-      const { error: dbError } = await supabase
-        .from('reports')
-        .insert([{
-          title: file.name.replace(/\.[^/.]+$/, ""),
-          file_url: publicUrl,
-          user_id: userData.email,
-          analysis: result.analysis, 
-          status: 'completed'
-        }]);
+//       const { error: dbError } = await supabase
+//         .from('reports')
+//         .insert([{
+//           title: file.name.replace(/\.[^/.]+$/, ""),
+//           file_url: publicUrl,
+//           user_id: userData.email,
+//           analysis: result.analysis, 
+//           status: 'completed'
+//         }]);
 
-      if (dbError) throw dbError;
+//       if (dbError) throw dbError;
 
-      const newReport = {
-        title: file.name,
-        date: new Date().toLocaleDateString('en-GB'),
-        analysis: result.analysis,
-        file_url: publicUrl
-      };
+//       const newReport = {
+//         title: file.name,
+//         date: new Date().toLocaleDateString('en-GB'),
+//         analysis: result.analysis,
+//         file_url: publicUrl
+//       };
 
-      setUserData(prev => ({
-        ...prev,
-        reports: [newReport, ...prev.reports]
-      }));
+//       setUserData(prev => ({
+//         ...prev,
+//         reports: [newReport, ...prev.reports]
+//       }));
 
-      alert("Upload + AI analysis done!");
+//       alert("Upload + AI analysis done!");
 
-    } catch (err) {
-      console.error(err);
-      alert("Error: " + err.message);
-    }
-  };
+//     } catch (err) {
+//       console.error(err);
+//       alert("Error: " + err.message);
+//     }
+//   };
 
 
     const handleFileChange = (e) => {

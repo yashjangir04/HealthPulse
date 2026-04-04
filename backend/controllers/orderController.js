@@ -3,6 +3,19 @@ const Patient = require("../models/patient-model");
 const Shopkeeper = require("../models/shopkeeper-model");
 const { calculateDistance } = require("../utils/calculateDistance");
 
+
+const getShopkeeperAcceptedDeals = async (req , res) => {
+    try {
+        const shopkeeper = await Shopkeeper.findById(req.user.id);
+        if (!shopkeeper) return res.status(404).json({ success: false });
+
+        const orders = await Order.find({ shopkeeperID: shopkeeper._id }).populate("patientID").sort({ createdAt: -1 }).lean() ;
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ msg: error.message });
+    }
+}
+
 const createOrder = async (req, res) => {
     const medicines = req.body.prescriptions;
     const patientID = req.user.id;
@@ -24,7 +37,7 @@ const createOrder = async (req, res) => {
 }
 
 const getAllActiveOrders = async (req, res) => {
-    const orders = await Order.find({ status: "pending" }).populate("patientID responses.shopkeeperID").lean();
+    const orders = await Order.find().populate("patientID responses.shopkeeperID").lean();
     return res.status(200).json(orders);
 }
 
@@ -107,4 +120,4 @@ const acceptOrder = async (req, res) => {
     }
 }
 
-module.exports = { createOrder, getAllActiveOrders, addResponseToOrder, getPatientOrders, acceptOrder };
+module.exports = { createOrder, getAllActiveOrders, addResponseToOrder, getPatientOrders, acceptOrder, getShopkeeperAcceptedDeals };

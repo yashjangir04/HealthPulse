@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useAuth } from "../auth/AuthContext";
-import { Send, Bot, Sparkles, User as UserIcon, Loader2 } from "lucide-react";
-import { populateDB, resetDB, askQuestion } from "../api/bot"; // Ensure resetDB is imported
+import { useLocation } from "react-router-dom";
+import { Send, Bot, Sparkles, User as UserIcon, Loader2, Volume2 } from "lucide-react";
+import { populateDB, resetDB, askQuestion } from "../api/bot";
 
 const INITIAL_MESSAGES = [
   {
@@ -14,10 +15,14 @@ const INITIAL_MESSAGES = [
 
 const ChatPage = () => {
   const { isLoggedIn, loading, user } = useAuth();
+  const location = useLocation();
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
   const messagesEndRef = useRef(null);
+  // Store detected language from voice command for TTS reply
+  const voiceLangRef = useRef("hi");
 
   useEffect(() => {
     const handleExit = () => {
@@ -51,50 +56,63 @@ const ChatPage = () => {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // ─── TTS helper — calls voice_server /api/tts ───────────────────
+  const speakText = useCallback(async (text, msgId) => {
+    try {
+      setSpeakingMsgId(msgId);
+      const res = await fetch("http://127.0.0.1:5501/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, language: voiceLangRef.current }),
+      });
+      if (!res.ok) throw new Error("TTS failed");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.onended = () => { setSpeakingMsgId(null); URL.revokeObjectURL(url); };
+      audio.onerror = () => { setSpeakingMsgId(null); };
+      audio.play();
+    } catch (e) {
+      console.warn("TTS error:", e);
+      setSpeakingMsgId(null);
+    }
+  }, []);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!inputValue.trim()) return;
-
-    const userText = inputValue;
+  // ─── Core send logic (reusable) ───────────────────────────────────
+  const sendMessage = useCallback(async (text, autoSpeak = false) => {
+    if (!text.trim()) return;
 
     const newUserMsg = {
       id: Date.now().toString(),
-      text: userText,
+      text,
       sender: "user",
       timestamp: new Date().toISOString(),
     };
-
     setMessages((prev) => [...prev, newUserMsg]);
     setInputValue("");
     setIsTyping(true);
 
     try {
-      const response = await askQuestion({ question: userText });
-
+      const response = await askQuestion({ question: text });
       const data = response.data;
+      const aiText = data.response || "Sorry, I couldn't process that response.";
 
       const newAiMsg = {
         id: (Date.now() + 1).toString(),
-        text: data.response || "Sorry, I couldn't process that response.",
+        text: aiText,
         sender: "ai",
         timestamp: new Date().toISOString(),
       };
-      
       setMessages((prev) => [...prev, newAiMsg]);
 
+      // Speak the answer aloud if triggered by voice command
+      if (autoSpeak) {
+        await speakText(aiText, newAiMsg.id);
+      }
     } catch (error) {
       console.error("Failed to fetch AI response:", error);
-
-      const errorMessage = error.response?.data?.error || "I'm having trouble connecting to the server right now. Please try again later.";
-
+      const errorMessage = error.response?.data?.error ||
+        "I'm having trouble connecting to the server right now. Please try again later.";
       const errorMsg = {
         id: (Date.now() + 1).toString(),
         text: errorMessage,
@@ -105,6 +123,29 @@ const ChatPage = () => {
     } finally {
       setIsTyping(false);
     }
+  }, [speakText]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // ─── Auto-submit when navigated here via Voice Assistant ─────────
+  useEffect(() => {
+    const state = location.state;
+    if (state?.voiceQuery && !loading) {
+      // Store the detected language for TTS reply
+      if (state.detectedLanguage) voiceLangRef.current = state.detectedLanguage;
+      // Small delay so the page finishes rendering first
+      const t = setTimeout(() => sendMessage(state.voiceQuery, true), 600);
+      // Clear state so refreshing doesn't re-submit
+      window.history.replaceState({}, "");
+      return () => clearTimeout(t);
+    }
+  }, [location.state, loading, sendMessage]);
+
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    await sendMessage(inputValue);
   };
 
   const handleKeyDown = (e) => {
@@ -176,9 +217,24 @@ const ChatPage = () => {
                   >
                     {msg.text}
                   </div>
-                  <span className="text-[11px] font-medium text-slate-400 mt-1.5 px-1">
-                    {formatTime(msg.timestamp)}
-                  </span>
+                  <div className="flex items-center gap-2 mt-1.5 px-1">
+                    <span className="text-[11px] font-medium text-slate-400">
+                      {formatTime(msg.timestamp)}
+                    </span>
+                    {!isUser && (
+                      <button
+                        onClick={() => speakText(msg.text, msg.id)}
+                        title="Speak this response"
+                        style={{
+                          background: "none", border: "none", cursor: "pointer",
+                          color: speakingMsgId === msg.id ? "#3b82f6" : "#94a3b8",
+                          padding: "2px", display: "flex", alignItems: "center"
+                        }}
+                      >
+                        <Volume2 size={13} />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );

@@ -1,12 +1,12 @@
 // ‼️Attach user requirement(doctor speciality) in the User data with request
 
-const crypto = require('crypto') ;
-const Appointment = require("../models/appointment-model") ;
+const crypto = require('crypto');
+const Appointment = require("../models/appointment-model");
 
-let io = null ;
+let io = null;
 
 const setIO = (_io) => {
-    io = _io ;
+    io = _io;
 }
 
 const doctors = {
@@ -22,7 +22,10 @@ const patientQueue = {
 };
 
 const addDoctor = (doctor) => {
-    let speciality = doctor.speciality;
+    // SAFETY CHECK: Ensure doctor exists and has a valid string speciality
+    if (!doctor?.speciality || typeof doctor.speciality !== 'string') return;
+
+    let speciality = doctor.speciality.toLowerCase();
 
     if (!doctors[speciality]) {
         doctors[speciality] = new Set();
@@ -32,7 +35,10 @@ const addDoctor = (doctor) => {
 }
 
 const addPatient = (patient) => {
-    let requirement = patient.requirement;
+    // SAFETY CHECK: Ensure patient exists and has a valid string requirement
+    if (!patient?.requirement || typeof patient.requirement !== 'string') return;
+
+    let requirement = patient.requirement.toLowerCase();
 
     if (!patientQueue[requirement]) {
         patientQueue[requirement] = [];
@@ -42,22 +48,27 @@ const addPatient = (patient) => {
 }
 
 const removePatient = (patient) => {
-    let requirement = patient.requirement;
+    // SAFETY CHECK: Exit early if data is malformed
+    if (!patient?.requirement || typeof patient.requirement !== 'string') return;
+
+    let requirement = patient.requirement.toLowerCase();
 
     if (patientQueue[requirement]) {
-        patientQueue[requirement] = patientQueue[requirement].filter((p) => p._id !== patient._id);
+        patientQueue[requirement] = patientQueue[requirement].filter((p) => p?._id !== patient?._id);
     }
     tryMatch();
 }
 
 const removeDoctor = (doctor) => {
-    let speciality = doctor.speciality;
+    // SAFETY CHECK: Exit early if data is malformed
+    if (!doctor?.speciality || typeof doctor.speciality !== 'string') return;
+
+    let speciality = doctor.speciality.toLowerCase();
 
     if (doctors[speciality]) {
-        doctoy
-        rs[speciality] = new Set(
+        doctors[speciality] = new Set(
             [...doctors[speciality]].filter(
-                (d) => d._id !== doctor._id
+                (d) => d?._id !== doctor?._id
             )
         );
     }
@@ -66,7 +77,7 @@ const removeDoctor = (doctor) => {
 
 // helper function
 const popFromSet = (set) => {
-    if (set.size === 0) return null;
+    if (!set || set.size === 0) return null; // Added safety check for null sets
 
     const value = set.values().next().value;
     set.delete(value);
@@ -78,48 +89,71 @@ const tryMatch = () => {
     for (let speciality in doctors) {
         if (speciality === "general") continue;
 
-        while (doctors[speciality].size > 0 && patientQueue[speciality]?.length > 0) { // ? return undefined <=> false, otherwise error :)
+        // Using ?. to ensure patientQueue[speciality] exists before checking length
+        while (doctors[speciality]?.size > 0 && patientQueue[speciality]?.length > 0) { 
             let selectedDoctor = popFromSet(doctors[speciality]);
             let selectedPatient = patientQueue[speciality].shift(); // pair the patient who entered the queue early
+            
+            if (selectedDoctor && selectedPatient) {
+                createRoom(selectedDoctor, selectedPatient);
+            }
+        }
+    }
+
+    // Checking if general queue exists before accessing length
+    while (doctors.general?.size > 0 && patientQueue.general?.length > 0) {
+        let selectedDoctor = popFromSet(doctors.general);
+        let selectedPatient = patientQueue.general.shift(); 
+        
+        if (selectedDoctor && selectedPatient) {
             createRoom(selectedDoctor, selectedPatient);
         }
     }
 
-    while (doctors.general.size > 0 && patientQueue.general.length > 0) {
-        let selectedDoctor = popFromSet(doctors.general);
-        let selectedPatient = patientQueue.general.shift(); // pair the patient who entered the queue early
-        createRoom(selectedDoctor, selectedPatient);
-    }
-
     for (let speciality in doctors) {
-        if (patientQueue.general.length === 0) break;
-        if (speciality === "general" || doctors[speciality].size === 0) continue;
+        if (!patientQueue.general || patientQueue.general.length === 0) break;
+        if (speciality === "general" || !doctors[speciality] || doctors[speciality].size === 0) continue;
 
-        while (doctors[speciality].size > 0 && patientQueue.general.length > 0) {
+        while (doctors[speciality]?.size > 0 && patientQueue.general?.length > 0) {
             let selectedDoctor = popFromSet(doctors[speciality]);
             let selectedPatient = patientQueue.general.shift();
-            createRoom(selectedDoctor, selectedPatient);
+            
+            if (selectedDoctor && selectedPatient) {
+                createRoom(selectedDoctor, selectedPatient);
+            }
         }
     }
 }
 
 const createRoom = async (doctor, patient) => {
+    // CRITICAL SAFETY: Check if we have all necessary IDs and the IO instance
+    if (!doctor?._id || !patient?._id || !io) return;
+
     let roomID = crypto.randomUUID();
     let payload = {
-        doctorID: doctor._id , 
-        patientID: patient._id ,
+        doctorID: doctor._id, 
+        patientID: patient._id,
         roomID: roomID
     }
 
-    let date = new Date ;
-    await Appointment.create({
-        roomID ,
-        startTime : date ,
-        doctorID : doctor._id ,
-        patientID : patient._id
-    });
-    io.to(doctor.socket).emit("matched" , payload) ;
-    io.to(patient.socket).emit("matched" , payload) ;
+    let date = new Date();
+    
+    try {
+        await Appointment.create({
+            roomID,
+            startTime: date,
+            doctorID: doctor._id,
+            patientID: patient._id
+        });
+        
+        // Use ?. to safely emit only if the socket IDs exist
+        if (doctor?.socket) io.to(doctor.socket).emit("matched", payload);
+        if (patient?.socket) io.to(patient.socket).emit("matched", payload);
+        
+    } catch (error) {
+        console.error("Failed to create appointment room in DB:", error);
+        // Optional: emit an error back to the users here if needed
+    }
 }
 
 module.exports = {

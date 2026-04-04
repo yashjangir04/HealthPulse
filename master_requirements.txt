@@ -1,0 +1,40 @@
+# Master requirements for HealthPulse Project
+# This file combines dependencies from all Python sub-projects (ai_agent and report_Ai)
+
+# Web Framework and Server
+flask
+flask-cors
+werkzeug
+
+# AI and LangChain
+langchain
+langchain-community
+langchain-chroma
+langchain-huggingface
+langchain-groq
+langchain-core
+langchain-text-splitters
+
+# Machine Learning and OCR
+torch
+torchvision
+torchaudio
+easyocr
+sentence-transformers
+transformers
+
+# Data Processing and PDF
+pypdf
+numpy
+Pillow
+opencv-python-headless
+
+# Utility and APIs
+python-dotenv
+requests
+sarvamai
+thefuzz
+python-Levenshtein
+
+# Diagnostic and Scripts
+pipreqs
