@@ -20,9 +20,6 @@ const ContactPage = () => {
 
   const { showToast } = useToast();
 
-  // =========================
-  // FETCH SECONDARY CONTACTS
-  // =========================
   const fetchContacts = async () => {
     try {
       const { data } = await axios.get("/api/patient/contacts", {
@@ -35,9 +32,6 @@ const ContactPage = () => {
     }
   };
 
-  // =========================
-  // FETCH PRIMARY CONTACTS ✅ FIXED
-  // =========================
   const fetchPrimaryContacts = async () => {
     try {
       const { data } = await axios.get(
@@ -51,9 +45,6 @@ const ContactPage = () => {
     }
   };
 
-  // =========================
-  // ADD CONTACT
-  // =========================
   const addContact = async (contactData) => {
     try {
       const { data } = await axios.post(
@@ -68,9 +59,7 @@ const ContactPage = () => {
     }
   };
 
-  // =========================
-  // DELETE CONTACT
-  // =========================
+
   const deleteContact = async (id) => {
     try {
       await axios.delete("/api/patient/delete-contact", {
@@ -85,9 +74,6 @@ const ContactPage = () => {
     }
   };
 
-  // =========================
-  // LOAD DATA
-  // =========================
   useEffect(() => {
     if (user) {
       fetchContacts();
@@ -97,16 +83,12 @@ const ContactPage = () => {
 
   if (!user) return <div>Loading...</div>;
 
-  // =========================
-  // SAVE CONTACT
-  // =========================
   const handleSave = async () => {
     if (!form.name || !form.phone) {
       showToast("Fill required fields");
       return;
     }
 
-    // ✅ FIXED regex (more flexible)
     if (!/^\+?\d{10,15}$/.test(form.phone)) {
       showToast("Invalid phone number");
       return;
@@ -127,15 +109,13 @@ const ContactPage = () => {
     }
   };
 
-  // =========================
-  // UI
-  // =========================
+
   return (
     <div className="min-h-screen bg-slate-50 p-8">
 
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
+ 
         <div className="flex items-center gap-3 mb-8">
           <Phone className="text-blue-600" />
           <h1 className="text-3xl font-bold text-blue-600">
@@ -143,7 +123,7 @@ const ContactPage = () => {
           </h1>
         </div>
 
-        {/* PRIMARY CONTACTS */}
+      
         <div className="mb-10">
           <h2 className="text-lg font-semibold mb-4 text-gray-500">
             Primary Contacts
@@ -163,7 +143,7 @@ const ContactPage = () => {
           </div>
         </div>
 
-        {/* SECONDARY CONTACTS */}
+    
         <div className="mb-10">
           <h2 className="text-lg font-semibold mb-4 text-gray-500">
             Other Contacts
@@ -192,7 +172,6 @@ const ContactPage = () => {
           </div>
         </div>
 
-        {/* ADD CONTACT */}
         <div className="bg-white p-6 rounded-xl shadow max-w-md">
           <h2 className="text-lg font-semibold mb-4">Add Contact</h2>
 

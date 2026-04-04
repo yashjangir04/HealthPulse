@@ -439,7 +439,6 @@ const MediList = () => {
         </div>
       </div>
 
-      {/* --- Add Medication Modal --- */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl flex flex-col gap-6 animate-fade-in-up overflow-y-auto max-h-[95vh]">
@@ -470,7 +469,6 @@ const MediList = () => {
               />
             </div>
 
-            {/* 2. Custom Duration (Days) */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-gray-600">
                 Treatment Duration (How many days?)
@@ -487,7 +485,6 @@ const MediList = () => {
               />
             </div>
 
-            {/* 3. Specific Days Selection */}
             <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-gray-600">
                 Specific Days
@@ -525,21 +522,20 @@ const MediList = () => {
               </div>
             </div>
 
-            {/* Schedule Selectors */}
             <div className="flex flex-col gap-3">
               <label className="text-sm font-medium text-gray-600">
                 Select Schedule (Click to toggle)
               </label>
               <div className="flex justify-between gap-2">
                 {["M", "A", "E", "N"].map((slot) => {
-                  // Check if this slot is currently selected in the newMed state
+
                   const isSelected = newMed.schedule[slot] !== "not-prescribed";
 
                   return (
                     <button
                       key={slot}
-                      type="button" // Prevents accidental form submission
-                      onClick={() => handleToggleSlot(slot)} // Uses the correct toggle function
+                      type="button" 
+                      onClick={() => handleToggleSlot(slot)} 
                       className={`flex-1 aspect-square rounded-2xl flex items-center justify-center text-lg font-bold border-2 transition-all duration-200 cursor-pointer ${
                         isSelected
                           ? "bg-blue-100 text-blue-600 border-blue-300 shadow-sm scale-105"

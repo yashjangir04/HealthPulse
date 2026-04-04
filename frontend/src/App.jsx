@@ -10,9 +10,16 @@ import ProtectedRoute from "./ProtectedRoute";
 import Connect from "./pages/Connect";
 import SignInForm from "./pages/SignInForm";
 
+<<<<<<< HEAD
 import StepForm from "./pages/StepFormDoctor";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+=======
+import Connect from "./pages/Connect" ;
+// import StepForm from "./pages/StepFormDoctor";
+// import StepFormPatient from "./pages/StepFormPatient";
+// import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+>>>>>>> 24bd186c8b62faae10dc7f81cb9fb4278e15ef23
 import Lobby from "./pages/Lobby";
 import Appointments from "./pages/Appointments";
 import Signup from "./pages/Signup";
