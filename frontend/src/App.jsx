@@ -8,14 +8,7 @@ import Contact from "./pages/ContactPage";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
 
-import ProfilePage from "./pages/ProfilePage";
 import Connect from "./pages/Connect";
-
-import SignInForm from "./pages/SignInForm";
-
-import StepForm from "./pages/StepFormDoctor";
-import StepFormPatient from "./pages/StepFormPatient";
-import StepFormShopkeeper from "./pages/StepFormShopkeeper";
 
 import SignInForm from "./pages/SignInForm";
 
