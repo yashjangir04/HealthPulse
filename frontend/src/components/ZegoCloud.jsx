@@ -38,10 +38,10 @@ const ZegoCloud = () => {
       scenario: {
         mode: ZegoUIKitPrebuilt.VideoConference,
       },
-      // ✅ ADD THIS BLOCK 👇
+
       themeConfig: {
-        mode: "light", // 🔥 switch from dark → light
-        primaryColor: "#fff", // 🎨 nice modern indigo
+        mode: "light", 
+        primaryColor: "#fff", 
       },
 
       turnOnMicrophoneWhenJoining: true,

@@ -3,7 +3,6 @@ import React, { useState, useRef } from 'react';
 import { X, FileText, Upload, Loader2 } from 'lucide-react';
 import { createPortal } from "react-dom";
 
-// ... imports
 const ReportsListOverlay = ({ isOpen, onClose, reports, onUpload }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const fileInputRef = useRef(null);
@@ -17,7 +16,7 @@ const handleFileUpload = async (event) => {
   setIsAnalyzing(true);
 
   try {
-    // ✅ ONLY send file to parent
+
     await onUpload(file);
   } catch (error) {
     alert("Upload failed!");
@@ -26,8 +25,6 @@ const handleFileUpload = async (event) => {
     event.target.value = null;
   }
 };
-
-  // ... (Rest of your JSX)
 
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4">
@@ -41,8 +38,7 @@ const handleFileUpload = async (event) => {
           </div>
           
           <div className="flex items-center gap-3">
-            
-            {/* HIDDEN INPUT */}
+
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -50,13 +46,11 @@ const handleFileUpload = async (event) => {
               className="hidden" 
               accept=".pdf,.jpg,.png,.doc,.docx"
             />
-            
-            {/* UPLOAD BUTTON */}
+
 <button onClick={() => fileInputRef.current.click()}>
               {isAnalyzing ? <Loader2 className="animate-spin" /> : <Upload />}
             </button>
 
-            {/* CLOSE BUTTON */}
             <button 
               onClick={onClose} 
               className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400"
@@ -66,7 +60,6 @@ const handleFileUpload = async (event) => {
           </div>
         </div>
 
-        {/* REPORT LIST */}
         <div className="p-8 overflow-y-auto space-y-4 flex-1 bg-white">
           {reports.map((report, i) => (
             <div 

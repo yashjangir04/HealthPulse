@@ -7,13 +7,13 @@ const Landing = () => {
   return (
     <div className="min-h-screen flex flex-col">
       
-      {/* Page Content */}
+
       <main className="grow">
         <HeroSection />
         <FeaturesSection />
       </main>
 
-      {/* Footer */}
+
       <Footer />
 
     </div>

@@ -12,7 +12,6 @@ const ShopView = () => {
   return (
     <div className="p-4 md:p-8 bg-[#E3EEFF]/50 min-h-screen">
 
-      {/* 🔵 NAV */}
       <div className="max-w-[1200px] mx-auto mb-8 flex gap-4">
         <button className="px-6 py-3 rounded-2xl bg-[#1B80FD] text-white">
           Overview
@@ -23,13 +22,10 @@ const ShopView = () => {
         </button>
       </div>
 
-      {/* 🔥 MAIN */}
       <div className="max-w-[1200px] mx-auto grid grid-cols-12 gap-6">
 
-        {/* LEFT */}
         <div className="col-span-12 lg:col-span-8">
 
-          {/* 🏪 SHOP PROFILE */}
           <div className="bg-white rounded-3xl p-6 shadow">
 
             <h2 className="text-xl font-bold">
@@ -50,7 +46,6 @@ const ShopView = () => {
 
           </div>
 
-          {/* 📦 ORDERS */}
           <div className="bg-white mt-6 rounded-3xl p-6 shadow">
             <div className="flex items-center gap-2 mb-4">
               <ShoppingCart size={18} />
@@ -72,10 +67,8 @@ const ShopView = () => {
 
         </div>
 
-        {/* RIGHT */}
         <div className="col-span-12 lg:col-span-4">
 
-          {/* 📊 BUSINESS STATS */}
           <div className="bg-white rounded-3xl p-6 shadow mb-6">
             <h3 className="font-semibold mb-3">Business Overview</h3>
 
@@ -84,7 +77,6 @@ const ShopView = () => {
             <p>Products: {userData?.productCount || 0}</p>
           </div>
 
-          {/* 📦 INVENTORY */}
           <div className="bg-white rounded-3xl p-6 shadow">
             <div className="flex items-center gap-2 mb-3">
               <Package size={18} />

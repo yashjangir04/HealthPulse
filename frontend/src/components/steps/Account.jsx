@@ -1,39 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
-import { AuthProvider } from './auth/AuthContext';
-import { ToastProvider } from "./components/ToastContext";
+import React from "react";
 
+const Account = ({ formData, setFormData }) => {
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
-  <ToastProvider>
-    <AuthProvider>
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
-      <App />
-    
-    </AuthProvider>
-  </ToastProvider>
-    
-  // </React.StrictMode>  
-);
+  return (
+    <div className="flex flex-col gap-4  h-[320px] overflow-y-auto">
 
+<input
+type="text"
+name="name"
+placeholder="Full Name"
+value={formData.name}
+onChange={handleChange}
+ className="border p-3 rounded-lg"
+/>
 
+<input
+type="email"
+name="email"
+placeholder="Email"
+value={formData.email}
+onChange={handleChange}
+ className="border p-3 rounded-lg"
+/>
 
+<input
+type="password"
+name="password"
+placeholder="Password"
+value={formData.password}
+onChange={handleChange}
+ className="border p-3 rounded-lg"
+/>
 
+    </div>
+  );
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default Account;

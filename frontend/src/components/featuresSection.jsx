@@ -9,7 +9,6 @@ import diseaseDetectionGraphic from "../assets/Disease_Detection.png";
 import aiChatGraphic from "../assets/AI_Chat_Support.png";
 import emergencyAlertsGraphic from "../assets/Emergency_Alerts.png";
 
-// Custom Health Plus SVG
 const HealthPlusIcon = ({ className }) => (
   <svg 
     viewBox="0 0 24 24" 

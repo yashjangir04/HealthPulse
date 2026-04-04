@@ -50,9 +50,6 @@ const ProfileView = () => {
       ]
     });
 
-  // ✅ REPLACE your handleReportUpload with this inside ProfileContent.js
-  // ... existing code
-
   useEffect(() => {
     const testConnection = async () => {
       const { data, error } = await supabase.from('reports').select('*').limit(1);
@@ -70,13 +67,13 @@ const ProfileView = () => {
     const { data, error } = await supabase
       .from('reports')
       .select('*')
-      .eq('user_id', userData.email) // Matching the user
-      .order('created_at', { ascending: false }); // Newest first
+      .eq('user_id', userData.email) 
+      .order('created_at', { ascending: false }); 
 
     if (error) {
       console.error("Error fetching reports:", error);
     } else if (data) {
-      // Update the state with REAL data from DB
+
       setUserData(prev => ({
         ...prev,
         reports: data.map(repo => ({
@@ -90,7 +87,7 @@ const ProfileView = () => {
   };
 
   fetchUserReports();
-}, [userData.email]); // Runs once when the component mounts
+}, [userData.email]); 
 
   const handleReportUpload = async (file) => {
     if (!file) return;
@@ -105,7 +102,6 @@ const ProfileView = () => {
 
       if (storageError) throw storageError;
 
-      // 2. Get public URL
 const { data } = supabase.storage
   .from('medical-reports')
   .getPublicUrl(fileName);
@@ -114,7 +110,6 @@ const publicUrl = data?.publicUrl;
 
 if (!publicUrl) throw new Error("Failed to get public URL");
 
-      // 3. 🔥 CALL BACKEND AI API
 const response = await axios.post('/api/analyze-report', {
   reportUrl: publicUrl,
   userId: userData.email
@@ -124,20 +119,18 @@ const response = await axios.post('/api/analyze-report', {
 
       if (!result.success) throw new Error("AI failed");
 
-      // 4. Save to Supabase DB
       const { error: dbError } = await supabase
         .from('reports')
         .insert([{
           title: file.name.replace(/\.[^/.]+$/, ""),
           file_url: publicUrl,
           user_id: userData.email,
-          analysis: result.analysis, // 🔥 IMPORTANT
+          analysis: result.analysis, 
           status: 'completed'
         }]);
 
       if (dbError) throw dbError;
 
-      // 5. Update UI
       const newReport = {
         title: file.name,
         date: new Date().toLocaleDateString('en-GB'),
@@ -157,7 +150,7 @@ const response = await axios.post('/api/analyze-report', {
       alert("Error: " + err.message);
     }
   };
-  // ... rest of component
+
 
     const handleFileChange = (e) => {
       const file = e.target.files[0];
@@ -195,8 +188,7 @@ const response = await axios.post('/api/analyze-report', {
 
     return (
       <div className="p-4 md:p-8 bg-[#E3EEFF]/50 min-h-screen">
-        
-        {/* PAGE NAVIGATION TABS */}
+
         <div className="max-w-[1200px] mx-auto mb-8 flex gap-4">
           <button 
             onClick={() => setCurrentPage(1)}
@@ -214,12 +206,11 @@ const response = await axios.post('/api/analyze-report', {
 
         <div className="max-w-[1200px] mx-auto">
           {currentPage === 1 ? (
-            /* --- PAGE 1: PRIMARY PROFILE & APPOINTMENTS (LEFT) | VITALS & MEDS (RIGHT) --- */
+
             <div className="grid grid-cols-12 gap-6 items-stretch">
-              
-              {/* LEFT COLUMN */}
+
               <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
-                {/* MAIN IDENTITY CARD */}
+
                 <section className="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-xl border-[2px] border-[#1B80FD]/20 flex flex-col md:flex-row gap-8 lg:gap-12">
                   <div className="flex flex-col items-center w-full md:w-[40%] shrink-0">
                     <div className="relative group cursor-pointer">
@@ -262,7 +253,6 @@ const response = await axios.post('/api/analyze-report', {
                   </div>
                 </section>
 
-                {/* APPOINTMENT SCHEDULE BOX (NOW BELOW PROFILE) */}
                 <section className="bg-white rounded-[2.5rem] shadow-xl border-[2px] border-[#1B80FD]/10 overflow-hidden flex-grow">
                   <div className="px-8 py-5 border-b border-gray-100 flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -289,7 +279,6 @@ const response = await axios.post('/api/analyze-report', {
                 </section>
               </div>
 
-              {/* RIGHT COLUMN */}
               <div className="col-span-12 lg:col-span-4 flex flex-col gap-6">
                 <section className="bg-white rounded-[2.5rem] overflow-hidden shadow-xl border-[2px] border-[#1B80FD]/10 flex-grow">
                   <div className="px-8 py-4 flex justify-between items-center border-b border-gray-100">
@@ -322,7 +311,7 @@ const response = await axios.post('/api/analyze-report', {
               </div>
             </div>
           ) : (
-            /* --- PAGE 2: MEDICAL HISTORY (UNCHANGED) --- */
+
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 lg:col-span-7">
                 <section className="bg-white rounded-[2.5rem] p-10 shadow-xl border-[2px] border-[#1B80FD]/10 h-full">
@@ -371,7 +360,6 @@ const response = await axios.post('/api/analyze-report', {
           )}
         </div>
 
-        {/* MODALS */}
         <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={handleFileChange} />
         <ReportsListOverlay isOpen={isReportsOpen} onClose={() => setIsReportsOpen(false)} reports={userData.reports} onUpload={handleReportUpload} />
         <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} userData={userData} onSave={handleSaveProfile} />
@@ -380,7 +368,6 @@ const response = await axios.post('/api/analyze-report', {
     );
   };
 
-  // HELPERS (UNCHANGED)
   const InfoBox = ({ label, value }) => (
     <div>
       <p className="text-slate-400 font-medium text-sm mb-1" style={{ fontFamily: "'Poppins', sans-serif" }}>{label}</p>

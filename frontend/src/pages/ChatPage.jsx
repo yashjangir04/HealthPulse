@@ -3,7 +3,6 @@ import { useAuth } from "../auth/AuthContext";
 import { Send, Bot, Sparkles, User as UserIcon, Loader2 } from "lucide-react";
 import { populateDB, resetDB, askQuestion } from "../api/bot"; // Ensure resetDB is imported
 
-// --- DUMMY INITIAL MESSAGES ---
 const INITIAL_MESSAGES = [
   {
     id: "1",
@@ -20,24 +19,19 @@ const ChatPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // --- NEW: Handle Page Exit & Tab Close ---
   useEffect(() => {
     const handleExit = () => {
-      // Call your reset DB API
-      // Note: We don't await here because page unloads shouldn't be blocked
+
       resetDB().catch((err) => console.error("Failed to reset DB on exit:", err));
     };
 
-    // 1. Listen for browser tab close or refresh
     window.addEventListener("beforeunload", handleExit);
 
-    // 2. Cleanup function runs when component unmounts (switching pages inside the app)
     return () => {
       window.removeEventListener("beforeunload", handleExit);
       handleExit();
     };
-  }, []); // Empty dependency array ensures this sets up only once on mount
-  // -----------------------------------------
+  }, []); 
 
   useEffect(() => {
     if (loading) return;
@@ -71,7 +65,6 @@ const ChatPage = () => {
 
     const userText = inputValue;
 
-    // 1. Add User Message to UI instantly
     const newUserMsg = {
       id: Date.now().toString(),
       text: userText,
@@ -83,14 +76,11 @@ const ChatPage = () => {
     setInputValue("");
     setIsTyping(true);
 
-    // 2. Call the Real Backend API
     try {
       const response = await askQuestion({ question: userText });
 
-      // Axios automatically puts the JSON body inside the `.data` property
       const data = response.data;
 
-      // 3. Add AI Response to UI
       const newAiMsg = {
         id: (Date.now() + 1).toString(),
         text: data.response || "Sorry, I couldn't process that response.",
@@ -102,11 +92,9 @@ const ChatPage = () => {
 
     } catch (error) {
       console.error("Failed to fetch AI response:", error);
-      
-      // Axios puts server error messages inside error.response.data (if the server sent one)
+
       const errorMessage = error.response?.data?.error || "I'm having trouble connecting to the server right now. Please try again later.";
 
-      // Fallback error message if backend fails
       const errorMsg = {
         id: (Date.now() + 1).toString(),
         text: errorMessage,
@@ -133,7 +121,6 @@ const ChatPage = () => {
     });
   };
 
-  // --- LOADING STATE ---
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-slate-50">
@@ -144,10 +131,9 @@ const ChatPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-slate-50 pt-20 lg:pt-24 pb-6 px-4 sm:px-6 lg:px-8">
-      {/* Chat Container */}
+
       <div className="flex flex-col flex-1 max-w-4xl mx-auto w-full bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
-        
-        {/* Header */}
+
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white/80 backdrop-blur-sm z-10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
@@ -162,7 +148,6 @@ const ChatPage = () => {
           </div>
         </div>
 
-        {/* Message Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 scroll-smooth">
           {messages.map((msg) => {
             const isUser = msg.sender === "user";
@@ -174,14 +159,13 @@ const ChatPage = () => {
                   isUser ? "ml-auto flex-row-reverse" : "mr-auto"
                 }`}
               >
-                {/* Avatar */}
+
                 <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-sm mt-1 ${
                   isUser ? "bg-blue-600 text-white" : "bg-white border border-slate-200 text-blue-600"
                 }`}>
                   {isUser ? <UserIcon size={16} /> : <Bot size={18} />}
                 </div>
 
-                {/* Message Bubble */}
                 <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
                   <div
                     className={`px-5 py-3.5 rounded-2xl shadow-sm text-[15px] leading-relaxed whitespace-pre-wrap ${
@@ -200,7 +184,6 @@ const ChatPage = () => {
             );
           })}
 
-          {/* Typing Indicator */}
           {isTyping && (
             <div className="flex gap-4 max-w-[80%] mr-auto animate-in fade-in zoom-in duration-300">
               <div className="shrink-0 w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm text-blue-600 mt-1">
@@ -214,11 +197,9 @@ const ChatPage = () => {
             </div>
           )}
 
-          {/* Invisible div to force scroll to bottom */}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
         <div className="p-4 bg-white border-t border-slate-100">
           <form
             onSubmit={handleSendMessage}

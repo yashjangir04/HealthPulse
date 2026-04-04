@@ -22,10 +22,10 @@ const Lobby = () => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const isDoctor = user?.role === "doctor";
   useEffect(() => {
-    // Timer for UI purposes
+
     const timer = setInterval(() => setElapsedTime(prev => prev + 1), 1000);
     
-    // Safely initialize socket inside the effect
+
     const socket = io("http://localhost:5000");
 
     socket.on("connect", () => {
@@ -68,7 +68,7 @@ const Lobby = () => {
   }, [navigate, user, speciality, isDoctor]);
 
   const handleCancel = () => {
-    navigate(-1); // go to previous route/page
+    navigate(-1); 
   };
 
   const handleTryAgain = () => {
@@ -86,7 +86,6 @@ const Lobby = () => {
     <div className="min-h-screen bg-[#FAFCFF] font-sans text-gray-900 pt-24 pb-32">
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header Section with Profile Badge (Matching other pages) */}
         <div className="mb-10 flex flex-col sm:flex-row sm:items-start justify-between gap-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md border border-blue-200 bg-blue-50 mb-4">
@@ -120,25 +119,20 @@ const Lobby = () => {
           </div>
         </div>
 
-        {/* Centered Lobby Card */}
         <div className="max-w-lg mx-auto mt-8">
           <div className="bg-white rounded-3xl shadow-xl shadow-blue-900/5 p-8 sm:p-12 border border-slate-100 text-center relative overflow-hidden">
-            
-            {/* Decorative background glow */}
+
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-48 bg-blue-50 blur-3xl rounded-full opacity-60 pointer-events-none"></div>
 
-            {/* State 1: Connecting */}
             {connectionStatus === "connecting" && (
               <div className="flex flex-col items-center w-full animate-in fade-in duration-500 relative z-10">
-                
-                {/* Premium Radar/Pulse Animation */}
+
                 <div className="relative flex justify-center items-center w-40 h-40 mb-10 mt-2">
-                  {/* Outer Rings */}
+                  
                   <div className="absolute inset-0 bg-blue-100 rounded-full animate-ping opacity-40" style={{ animationDuration: "2s" }}></div>
                   <div className="absolute inset-4 bg-blue-200 rounded-full animate-ping opacity-50" style={{ animationDelay: "0.5s", animationDuration: "2s" }}></div>
                   <div className="absolute inset-8 bg-blue-300 rounded-full animate-ping opacity-60" style={{ animationDelay: "1s", animationDuration: "2s" }}></div>
                   
-                  {/* Center Core */}
                   <div className="relative z-10 w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/40 ring-4 ring-white">
                     {isDoctor ? (
                       <Stethoscope size={28} className="text-white animate-pulse" />
@@ -163,7 +157,6 @@ const Lobby = () => {
                   </p>
                 </div>
 
-                {/* Status Badges */}
                 <div className="flex items-center justify-center gap-4 mb-10 w-full">
                   <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-[11px] font-bold text-slate-500">
                     <Clock size={14} className="text-blue-500" />
