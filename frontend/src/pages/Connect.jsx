@@ -7,7 +7,10 @@ import {
   ChevronDown, 
   Search, 
   Video, 
-  Users 
+  Users,
+  Mic,
+  Loader2,
+  Wand2
 } from 'lucide-react';
 
 const Connect = () => {
@@ -17,6 +20,66 @@ const Connect = () => {
   const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const [symptoms, setSymptoms] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [recommendedSpec, setRecommendedSpec] = useState(null);
+  const [isListening, setIsListening] = useState(false);
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const handleListen = () => {
+    if (!SpeechRecognition) {
+      alert("Your browser does not support Speech Recognition.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => setIsListening(true);
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setSymptoms(prev => prev ? prev + ' ' + transcript : transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+  };
+
+  const handleAnalyze = async () => {
+    if (!symptoms.trim()) return;
+    setIsAnalyzing(true);
+    setRecommendedSpec(null);
+    try {
+      const res = await fetch('http://127.0.0.1:5500/api/analyze-symptoms', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symptoms })
+      });
+      const data = await res.json();
+      setRecommendedSpec(data.specialty);
+    } catch (err) {
+      console.error(err);
+      setRecommendedSpec('general');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleCallRecommended = () => {
+    if (recommendedSpec) {
+      navigate(`/lobby/${recommendedSpec.toLowerCase()}`);
+    }
+  };
 
   const specializations = [
     { label: "Cardiologist (Heart)", value: "cardiologist" },
@@ -223,21 +286,83 @@ const Connect = () => {
                 <div className="grow border-t border-slate-100"></div>
               </div>
 
-              <div className="text-center bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-blue-500">
-                  <Activity size={24} />
+              <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm text-blue-500">
+                    <Wand2 size={20} />
+                  </div>
+                  <div>
+                    <h3 className="font-black text-slate-900 text-sm">Not sure what's wrong?</h3>
+                    <p className="font-medium text-xs text-slate-500">
+                      Describe your symptoms and AI will route you.
+                    </p>
+                  </div>
                 </div>
-                <h3 className="font-black text-slate-900 mb-2">Not sure what's wrong?</h3>
-                <p className="font-medium text-sm text-slate-500 mb-5">
-                  Our general physicians can help diagnose your symptoms and guide you.
-                </p>
-                <button
-                  onClick={handleGeneralDoctor}
-                  className="w-full py-3.5 px-4 cursor-pointer rounded-xl font-black text-slate-700 bg-white border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-95 flex items-center justify-center gap-2"
-                >
-                  <Users size={18} />
-                  Talk to a General Doctor
-                </button>
+
+                <div className="relative mb-3">
+                  <textarea
+                    value={symptoms}
+                    onChange={(e) => setSymptoms(e.target.value)}
+                    placeholder="e.g. I have a severe headache and mild fever..."
+                    className="w-full bg-white border border-slate-200 rounded-xl p-4 pr-12 text-sm focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all resize-none h-24"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleListen}
+                    className={`absolute right-3 bottom-3 p-2 rounded-full transition-all ${
+                      isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Mic size={16} />
+                  </button>
+                </div>
+
+                {!recommendedSpec ? (
+                  <button
+                    onClick={handleAnalyze}
+                    disabled={isAnalyzing || !symptoms.trim()}
+                    className={`w-full py-3 px-4 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2 ${
+                      isAnalyzing || !symptoms.trim()
+                        ? 'bg-blue-300 cursor-not-allowed'
+                        : 'bg-indigo-600 hover:bg-indigo-700 shadow-md cursor-pointer active:scale-95'
+                    }`}
+                  >
+                    {isAnalyzing ? (
+                      <><Loader2 size={18} className="animate-spin" /> Analyzing...</>
+                    ) : (
+                      "Analyze Symptoms"
+                    )}
+                  </button>
+                ) : (
+                  <div className="bg-white border border-blue-100 rounded-xl p-4 text-center animate-in fade-in zoom-in-95 duration-300 shadow-sm">
+                    <p className="text-sm font-medium text-slate-600 mb-1">Recommended Specialist:</p>
+                    <p className="text-xl font-black text-blue-700 capitalize mb-4">{recommendedSpec}</p>
+                    
+                    <div className="flex gap-3">
+                      <button
+                        onClick={handleCallRecommended}
+                        className="flex-1 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold text-sm shadow-md transition-all active:scale-95"
+                      >
+                        Call Now
+                      </button>
+                      <button
+                        onClick={() => setRecommendedSpec(null)}
+                        className="py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg font-bold text-sm transition-all"
+                      >
+                        Reset
+                      </button>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={handleGeneralDoctor}
+                    className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors uppercase tracking-wider"
+                  >
+                    Or skip straight to a General Doctor
+                  </button>
+                </div>
               </div>
             </div>
 

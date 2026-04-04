@@ -39,6 +39,7 @@ const medicationRouter = require("./routes/medicationRouter") ;
 const orderRouter = require("./routes/orderRouter") ;
 const authMiddleware = require("./middlewares/authMiddleware");
 const reportRouter = require("./routes/reportRouter");
+const doctorRouter = require("./routes/doctorRouter");
 
 
 app.use(express.json());
@@ -55,6 +56,7 @@ app.use("/api/appointments" , appointmentRouter) ;
 app.use("/api/medications" , medicationRouter) ;
 app.use("/api/orders" , orderRouter) ;
 app.use('/api/reports', reportRouter);
+app.use("/api/doctors", doctorRouter);
 
 // Health Route
 app.get("/health", (req, res) => {

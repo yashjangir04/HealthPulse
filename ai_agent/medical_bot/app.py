@@ -29,11 +29,12 @@ print("Knowledge base loaded successfully!")
 def api_chat():
     data = request.get_json()
     question = data.get("question")
+    english_question = data.get("english_question", question)
     if not question:
         return jsonify({"error": "No question provided"}), 400
         
     try:
-        response = query_agent(question)
+        response = query_agent(question, english_question)
         return jsonify({"response": response})
     except Exception as e:
         print(f"Error during query_agent: {e}")

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { User, LogOut, LogIn, Sparkles } from "lucide-react";
+import { useLanguage } from "../utils/LanguageContext";
 import logo from "../assets/logo.svg";
 import plusIcon from "../assets/plus.svg";
 
@@ -9,6 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { user, isLoggedIn, logout } = useAuth();
   const location = useLocation();
+  const { language, toggleLanguage, t } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const modalRef = useRef(null);
@@ -80,7 +82,7 @@ const Navbar = () => {
                   : "text-gray-500 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              Home
+              {t("home")}
             </Link>
           </li>
           <li className="w-full lg:w-auto">
@@ -92,10 +94,21 @@ const Navbar = () => {
                   : "text-gray-500 hover:text-blue-600 hover:bg-gray-50"
               }`}
             >
-              About Us
+              {t("aboutUs")}
             </Link>
           </li>
         </ul>
+
+        {/* Language Toggle */}
+        <button
+          onClick={toggleLanguage}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 hover:bg-blue-50 hover:border-blue-200 transition-all duration-300 text-sm font-bold select-none"
+          title="Switch Language"
+        >
+          <span className={language === "en" ? "text-blue-600" : "text-gray-400"}>EN</span>
+          <span className="text-gray-300">/</span>
+          <span className={language === "hi" ? "text-blue-600" : "text-gray-400"}>हि</span>
+        </button>
 
         <div className="w-full lg:w-auto border-t lg:border-none border-gray-100 pt-6 lg:pt-0 flex justify-center">
           {isLoggedIn ? (
@@ -124,7 +137,7 @@ const Navbar = () => {
                     }}
                     className="w-full text-left px-4 py-2.5 rounded-xl text-gray-600 cursor-pointer font-semibold text-sm hover:text-blue-600 hover:bg-blue-50 transition-colors flex items-center gap-3"
                   >
-                    <User size={16} className="text-blue-500" /> Dashboard
+                    <User size={16} className="text-blue-500" /> {t("dashboard")}
                   </button>
 
                   <button
@@ -135,7 +148,7 @@ const Navbar = () => {
                     }}
                     className="w-full text-left px-4 py-2.5 rounded-xl text-red-600 cursor-pointer font-semibold text-sm hover:bg-red-50 transition-colors flex items-center gap-3 mt-1"
                   >
-                    <LogOut size={16} /> Sign Out
+                    <LogOut size={16} /> {t("signOut")}
                   </button>
                 </div>
               </div>
@@ -146,14 +159,14 @@ const Navbar = () => {
                 to="/account/login"
                 className="w-full lg:w-auto text-center px-6 py-2.5 rounded-full text-[15px] font-bold text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300"
               >
-                Sign In
+                {t("signIn")}
               </Link>
 
               <Link
                 to="/account/register"
                 className="group relative w-full lg:w-auto text-center px-7 py-2.5 rounded-full text-[15px] font-bold text-white bg-linear-to-r from-primary to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-[0_6px_20px_rgba(99,102,241,0.3)] hover:shadow-[0_8px_25px_rgba(99,102,241,0.4)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 flex items-center justify-center gap-2"
               >
-                Get Started
+                {t("getStarted")}
                 <Sparkles size={16} className="opacity-70 group-hover:animate-pulse" />
               </Link>
             </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import FeatureCard from "./featureCard";
+import { useLanguage } from "../utils/LanguageContext";
 
 import recordAnalysisGraphic from "../assets/Record_Analysis.png";
 import doctorRoutingGraphic from "../assets/Doctor_Routing.png";
@@ -41,35 +42,37 @@ const InteractiveFeatureCard = ({ item }) => {
 };
 
 const FeaturesSection = () => {
+  const { t } = useLanguage();
+
   const features = [
     {
-      title: "Record Analysis",
-      description: "Upload reports, get AI insights, and keep your medical history safely stored.",
+      title: t("feat1Title"),
+      description: t("feat1Desc"),
       imageSrc: recordAnalysisGraphic,
     },
     {
-      title: "Doctor Routing",
-      description: "Automatically connects you to the right general or specialized doctors.",
+      title: t("feat2Title"),
+      description: t("feat2Desc"),
       imageSrc: doctorRoutingGraphic,
     },
     {
-      title: "Medicine Reminder",
-      description: "Never miss a dose with our smart to-do list and active alert system.",
+      title: t("feat3Title"),
+      description: t("feat3Desc"),
       imageSrc: medicineReminderGraphic,
     },
     {
-      title: "Disease Detection",
-      description: "AI analyzes your symptoms and identifies possible conditions early.",
+      title: t("feat4Title"),
+      description: t("feat4Desc"),
       imageSrc: diseaseDetectionGraphic,
     },
     {
-      title: "AI Chat Support",
-      description: "Intelligent assistant checks doctor notes for risks and schedules follow-ups.",
+      title: t("feat5Title"),
+      description: t("feat5Desc"),
       imageSrc: aiChatGraphic,
     },
     {
-      title: "Emergency Alerts",
-      description: "Family members and doctors are instantly notified during high-risk situations.",
+      title: t("feat6Title"),
+      description: t("feat6Desc"),
       imageSrc: emergencyAlertsGraphic,
     },
   ];
@@ -87,19 +90,19 @@ const FeaturesSection = () => {
         <div className="mb-16 md:mb-20 text-center flex flex-col items-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-6 shadow-sm backdrop-blur-sm">
              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-600"></span>
-             <span className="text-sm font-bold text-blue-700 tracking-wide uppercase">Core Capabilities</span>
+             <span className="text-sm font-bold text-blue-700 tracking-wide uppercase">{t("coreCapabilities")}</span>
              <span className="flex h-1.5 w-1.5 rounded-full bg-blue-600"></span>
           </div>
           
           <h2 className="text-[32px] sm:text-[40px] md:text-[48px] lg:text-[54px] font-black text-gray-900 leading-[1.15] tracking-tight max-w-3xl mb-6">
-            Everything you need for{" "}
+            {t("featuresSectionTitle1")}
             <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">
-              smarter healthcare.
+              {t("featuresSectionTitle2")}
             </span>
           </h2>
           
           <p className="text-lg text-gray-500 font-medium max-w-2xl leading-relaxed">
-            Discover our comprehensive suite of AI-powered tools designed to make your health journey more accessible, efficient, and reliable.
+            {t("featuresSectionDesc")}
           </p>
         </div>
 

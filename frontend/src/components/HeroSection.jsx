@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, ContactShadows, Float } from "@react-three/drei";
 import { ArrowRight, Sparkles, MessageSquare } from "lucide-react";
+import { useLanguage } from "../utils/LanguageContext";
 
 import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
@@ -9,29 +10,43 @@ import Heart from "../components/Heart";
 
 import { useNavigate } from "react-router-dom";
 
-const words = ["trusted", "accessible", "empowering", "digital"];
 
+// --- Custom component for automatic & mouse-tracked rotation ---
 // --- Custom component for automatic & mouse-tracked rotation ---
 function InteractiveModel({ children }) {
   const groupRef = useRef();
+  
+  // Starting speed of the initial spin. Higher = faster initial spin.
+  const spinVelocity = useRef(40); 
+  
+  // Accumulates the extra rotation angle from the initial spin
+  const spinAngle = useRef(0); 
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    const time = state.clock.getElapsedTime();
+    // 1. Smoothly decelerate the spin velocity down to 0 over time.
+    // The multiplier '3' controls how quickly it slows down (acts like friction).
+    spinVelocity.current -= spinVelocity.current * 3 * delta;
+    
+    // Once it gets extremely slow, lock it to 0 to save performance
+    if (spinVelocity.current < 0.01) spinVelocity.current = 0;
 
-    // 1. Get mouse coordinates relative to the canvas (-1 to 1)
+    // 2. Add the current velocity to our accumulated intro angle
+    spinAngle.current += spinVelocity.current * delta;
+
+    // 3. Standard interactive tracking
+    const time = state.clock.getElapsedTime();
     const targetX = (state.pointer.x * Math.PI) / 4;
     const targetY = (state.pointer.y * Math.PI) / 4;
 
-    // 2. Add base continuous rotation (speed 0.5) + the mouse offset
-    const expectedY = time * 0.5 + targetX;
+    // 4. The magic: Combine base rotation, mouse position, AND the decaying intro spin
+    const expectedY = (time * 0.5) + targetX + spinAngle.current;
 
-    // 3. Smoothly interpolate the rotation so it glides naturally
-    groupRef.current.rotation.y +=
-      (expectedY - groupRef.current.rotation.y) * 0.05;
-    groupRef.current.rotation.x +=
-      (-targetY - groupRef.current.rotation.x) * 0.05;
+    // 5. Apply smooth interpolation so it glides perfectly
+    // (Increased the lerp factor slightly from 0.05 to 0.08 so the fast spin tracks tighter)
+    groupRef.current.rotation.y += (expectedY - groupRef.current.rotation.y) * 0.08;
+    groupRef.current.rotation.x += (-targetY - groupRef.current.rotation.x) * 0.08;
   });
 
   return <group ref={groupRef}>{children}</group>;
@@ -41,13 +56,18 @@ export default function HeroSection() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
+
+  const words_en = ["trusted", "accessible", "empowering", "digital"];
+  const words_hi = ["विश्वसनीय", "सुलभ", "सशक्त", "डिजिटल"];
+  const currentWords = language === "hi" ? words_hi : words_en;
 
   // Handle the text rotation effect
   useEffect(() => {
     const interval = setInterval(() => {
       setVisible(false);
       setTimeout(() => {
-        setIndex((prev) => (prev + 1) % words.length);
+        setIndex((prev) => (prev + 1) % currentWords.length);
         setVisible(true);
       }, 400);
     }, 3000);
@@ -77,39 +97,41 @@ export default function HeroSection() {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm mb-8 transition-transform hover:scale-105 cursor-pointer">
             <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
             <span className="text-sm font-semibold text-blue-800">
-              Transforming Rural Healthcare
+              {language === "hi" ? "ग्रामीण स्वास्थ्य सेवा में बदलाव" : "Transforming Rural Healthcare"}
             </span>
           </div>
 
           <h1 className="font-black leading-[1.15] tracking-tight text-[42px] sm:text-[56px] md:text-[68px] lg:text-[76px] xl:text-[84px] text-gray-900 mb-6">
-            Your{" "}
+            {language === "hi" ? "आपका" : "Your"}{" "}
             <div className="inline-grid grid-cols-1 grid-rows-1 align-bottom">
               <span
                 className={`col-start-1 row-start-1 bg-linear-to-r from-blue-600 via-indigo-600 to-blue-600 bg-size-[200%_auto] bg-clip-text text-transparent animate-gradient transition-all duration-500 ease-out pb-2
                 ${visible ? "opacity-100 translate-y-0 blur-0" : "opacity-0 -translate-y-4 blur-sm"}`}
               >
-                {words[index]}
+                {currentWords[index]}
               </span>
             </div>
             <br />
-            Health Partner.
+            {language === "hi" ? "स्वास्थ्य साथी।" : "Health Partner."}
           </h1>
 
           <p className="text-lg md:text-xl text-gray-500 font-medium max-w-2xl mb-10 leading-relaxed">
-            Empowering communities with accessible, AI-driven healthcare
-            insights and reliable medical support right at your fingertips.
+            {language === "hi" 
+              ? "AI-संचालित स्वास्थ्य जानकारी और विश्वसनीय चिकित्सा सहायता के साथ समुदायों को सशक्त बनाना।"
+              : "Empowering communities with accessible, AI-driven healthcare insights and reliable medical support right at your fingertips."
+            }
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
             <button onClick={() => {
               navigate('/account/register')
             }} className="w-full cursor-pointer sm:w-auto px-8 py-4 text-base font-bold text-white bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-[0_8px_25px_-8px_rgba(79,70,229,0.6)] hover:shadow-[0_12px_35px_-8px_rgba(79,70,229,0.7)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 group">
-              Get Started
+              {t("getStarted")}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
 
             <button className="w-full sm:w-auto px-8 py-4 text-base font-bold text-gray-700 bg-white border-2 border-gray-100 rounded-2xl shadow-sm hover:border-blue-100 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-300">
-              How it works
+              {language === "hi" ? "कैसे काम करता है" : "How it works"}
             </button>
           </div>
 
@@ -123,10 +145,10 @@ export default function HeroSection() {
                 </div>
                 <div className="flex flex-col text-left">
                   <span className="text-sm font-semibold text-gray-900">
-                    Not feeling well?
+                    {language === "hi" ? "तबीयत ठीक नहीं?" : "Not feeling well?"}
                   </span>
                   <span className="text-xs font-medium text-blue-600 flex items-center gap-1">
-                    Talk to our AI Assistant <Sparkles size={12} />
+                    {language === "hi" ? "AI सहायक से बात करें" : "Talk to our AI Assistant"} <Sparkles size={12} />
                   </span>
                 </div>
               </div>

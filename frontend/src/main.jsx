@@ -4,20 +4,16 @@ import App from './App';
 import './index.css';
 import { AuthProvider } from './auth/AuthContext';
 import { ToastProvider } from "./components/ToastContext";
-
-// import {AppProvider} from './context/AppContext';
+import { LanguageProvider } from "./utils/LanguageContext";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <React.StrictMode>
   <ToastProvider>
-    <AuthProvider>
-
-      <App />
-    
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+    </LanguageProvider>
   </ToastProvider>
-    
-  // </React.StrictMode>  
 );
 
 
