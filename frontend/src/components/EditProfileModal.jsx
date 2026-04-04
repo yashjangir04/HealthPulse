@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
 import { createPortal } from "react-dom";
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
+
   const [formData, setFormData] = useState({
-    height: userData.height,
-    weight: userData.weight,
-    address: userData.address,
+    height: "",
+    weight: "",
+ 
   });
+
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        height: userData.height || "",
+        weight: userData.weight || "",
+       
+      });
+    }
+  }, [userData]);
 
   if (!isOpen) return null;
 
@@ -57,15 +68,7 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
             />
           </div>
 
-          <div className="col-span-2 flex flex-col gap-2">
-            <label className="text-xs font-black text-[#1B80FD] uppercase tracking-widest ml-1">Home Address</label>
-            <textarea 
-              rows="2"
-              className="bg-[#F2F7FF] border-2 border-transparent focus:border-[#1B80FD]/30 focus:bg-white outline-none p-3 rounded-xl font-semibold text-slate-600 transition-all"
-              value={formData.address}
-              onChange={(e) => setFormData({...formData, address: e.target.value})}
-            />
-          </div>
+     
         </div>
 
      
@@ -100,3 +103,4 @@ const ReadOnlyField = ({ label, value }) => (
 );
 
 export default EditProfileModal;
+

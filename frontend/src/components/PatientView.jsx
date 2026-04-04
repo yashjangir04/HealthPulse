@@ -44,7 +44,10 @@ const ProfileView = () => {
           gender: user.gender || "N/A",
           bloodGroup: user.bloodGroup || "N/A",
           phoneNumber: user.phoneNumber || "N/A",
-          address: user.address?.fullAddress || user.address || "No address provided",
+          address:
+  typeof user.address === "object"
+    ? user.address.fullAddress
+    : user.address || "No address provided",
           avatar: user.avatar || null,
           secondaryContact: user.secondaryContacts?.[0]
             ? `${user.secondaryContacts[0].name} - ${user.secondaryContacts[0].phoneNumber}`
@@ -420,7 +423,23 @@ const ProfileView = () => {
 
       <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => handleReportUpload(e.target.files[0])} />
       <ReportsListOverlay isOpen={isReportsOpen} onClose={() => setIsReportsOpen(false)} reports={userData.reports} onUpload={handleReportUpload} />
-      <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} userData={userData} onSave={(updated) => setUserData({...userData, ...updated})} />
+      <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} userData={userData} onSave={async (formData) => {
+  try {
+    const res = await axios.put("/api/patient/profile", formData);
+
+    // update UI with backend response
+    setUserData(prev => ({
+      ...prev,
+      ...res.data
+    }));
+
+    setIsEditModalOpen(false);
+
+  } catch (err) {
+    console.error(err);
+    alert("Update failed");
+  }
+}} />
       <MedicationManagerModal isOpen={isMedModalOpen} onClose={() => setIsMedModalOpen(false)} medications={userData.medications} onToggleReminder={() => {}} />
     </div>
   );
@@ -433,7 +452,12 @@ const InfoBox = ({ icon: Icon, label, value }) => (
     </div>
     <div className="overflow-hidden">
       <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-sm font-semibold text-slate-800 truncate">{value}</p>
+      
+      <p  className="text-sm font-semibold text-slate-800 truncate">
+  {typeof value === "object"
+    ? value?.fullAddress || "Invalid address"
+    : value}
+</p>
     </div>
   </div>
 );
