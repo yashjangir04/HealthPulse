@@ -9,9 +9,11 @@ import EmergencyContact from "../components/steps/EmergencyContact";
 import { signupPatient } from "../api/auth";
 import AuthLayout from "../layouts/AuthLayout";
 import { useNavigate } from 'react-router-dom';
+import { useToast } from "../components/ToastContext";
 
 const StepFormPatient = () => {
-  const navigate = useNavigate() ;
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -104,11 +106,11 @@ const StepFormPatient = () => {
       const response = await signupPatient(formData);
   
       console.log("Patient registered:", response.data);
-  
+      showToast("Account created successfully", "success");
       navigate("/account/login");
     } catch (error) {
       console.log("Error:", error.response?.data || error.message);
-      alert("Registration failed");
+      showToast(error.response?.data?.msg || "Registration failed", "error");
     }
   };
 

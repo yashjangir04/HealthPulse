@@ -8,9 +8,11 @@ import ShopFinal from "../components/steps/ShopFinal";
 import {signupShopkeeper} from "../api/auth";
 import AuthLayout from "../layouts/AuthLayout.jsx";
 import { useNavigate } from 'react-router-dom';
+import { useToast } from "../components/ToastContext";
 
 const StepFormShopkeeper = () => {
-  const navigate = useNavigate() ;
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -72,15 +74,11 @@ const StepFormShopkeeper = () => {
       const response = await signupShopkeeper(formData);
   
       console.log("Shopkeeper registered:", response.data);
-  
-      navigate("/account/login") ;
-  
+      showToast("Account created successfully", "success");
+      navigate("/account/login");
     } catch (error) {
-  
       console.log("Error:", error.response?.data || error.message);
-  
-      alert("Registration failed");
-  
+      showToast(error.response?.data?.msg || "Registration failed", "error");
     }
   };
 

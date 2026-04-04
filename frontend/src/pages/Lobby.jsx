@@ -26,7 +26,7 @@ const Lobby = () => {
     const timer = setInterval(() => setElapsedTime(prev => prev + 1), 1000);
     
 
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_BACKEND_ROUTE);
 
     socket.on("connect", () => {
       console.log("Here") ;

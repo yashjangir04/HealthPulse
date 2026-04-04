@@ -68,7 +68,7 @@ const ChatPage = () => {
   const speakText = useCallback(async (text, msgId) => {
     try {
       setSpeakingMsgId(msgId);
-      const res = await fetch("http://127.0.0.1:5501/api/tts", {
+      const res = await fetch(`${import.meta.env.VITE_AI_ROUTE}/api/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, language: voiceLangRef.current }),
@@ -181,7 +181,7 @@ const ChatPage = () => {
         form.append("audio", blob, "command.webm");
 
         try {
-          const res = await fetch("http://127.0.0.1:5501/api/voice-command", { method: "POST", body: form });
+          const res = await fetch(`${import.meta.env.VITE_AI_ROUTE}/api/voice-command`, { method: "POST", body: form });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Server error");
 

@@ -20,6 +20,15 @@ placeholder="Specialization"
 
 <input
 type="text"
+name="hpId"
+placeholder="Healthcare Professional ID (HP-ID)"
+ className="border p-3 rounded-lg"
+ value={formData.hpId}
+ onChange={handleChange}
+/>
+
+<input
+type="text"
 name="qualification"
 placeholder="Qualification"
  className="border p-3 rounded-lg"

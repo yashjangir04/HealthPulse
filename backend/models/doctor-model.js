@@ -35,6 +35,12 @@ const doctorSchema = new Schema({
         type: String,
         required: true
     },
+    hpId: {
+        type: String,
+        required: true,
+        unique: true,
+        sparse: true
+    },
     address: {
         fullAddress: { type: String, required: true },
 
@@ -64,6 +70,10 @@ const doctorSchema = new Schema({
     rating: {
         type: Number,
         default: 5
+    },
+    totalRatingsCount: {
+        type: Number,
+        default: 0
     },
     roleType: {
         type: String,
