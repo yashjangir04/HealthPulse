@@ -20,6 +20,7 @@ import PatientOrders from "./pages/PatientOrders";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import DoctorsList from "./pages/DoctorsList";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -46,9 +47,7 @@ function App() {
               showSidebar={false}
               isFullHeighted={false}
             >
-              <div className=".box w-full h-screen mt-24 grid place-items-center">
-                <h1 className="poppins-bold text-3xl">About</h1>
-              </div>
+              <About />
             </MainLayout>
           }
         />
