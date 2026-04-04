@@ -24,7 +24,7 @@ const createOrder = async (req, res) => {
 }
 
 const getAllActiveOrders = async (req, res) => {
-    const orders = await Order.find({ status: "pending" }).populate("patientID responses.shopkeeperID").lean();
+    const orders = await Order.find().populate("patientID responses.shopkeeperID").lean();
     return res.status(200).json(orders);
 }
 

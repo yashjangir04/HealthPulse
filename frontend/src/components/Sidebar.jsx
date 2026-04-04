@@ -34,6 +34,13 @@ const Sidebar = ({
       : parts[0][0].toUpperCase();
   };
 
+  // Determine the display name based on the user's role
+  const getDisplayName = () => {
+    if (!user) return "User";
+    if (user.role === "shopkeeper") return user.ownerName || "Shopkeeper";
+    return user.name || "User";
+  };
+
   const handleLogout = async () => {
     try {
       await logout(); 
@@ -86,6 +93,7 @@ const Sidebar = ({
   };
 
   const menuItems = getMenuItems();
+  const displayName = getDisplayName();
 
   return (
     <>
@@ -159,13 +167,13 @@ const Sidebar = ({
             <div className="flex flex-col gap-4">
 
               <div className="flex items-center gap-3 px-1">
-                <div className="shrink-0 w-10 h-10 rounded-xl bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
-                  {getInitials(user?.name)}
+                <div className="shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold shadow-md">
+                  {getInitials(displayName)}
                 </div>
                 {(!isCollapsed || isOpen) && (
                   <div className="flex flex-col overflow-hidden">
                     <span className="font-extrabold text-gray-900 truncate text-[14px]">
-                      {user?.name || "User"}
+                      {displayName}
                     </span>
                     <span className="text-[10px] text-green-500 font-bold uppercase">Online</span>
                   </div>

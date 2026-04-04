@@ -21,6 +21,16 @@ app.use(cors({
     credentials : true
 })) ;
 
+const io = new Server(server,
+    {
+        cors: {
+            origin: "http://localhost:5173",
+            methods: ["GET", "POST"],
+            credentials: true
+        }
+    }
+);
+
 const authRouter = require("./routes/authRouter");
 const communicationRouter = require("./routes/communicationRouter");
 const patientRouter = require("./routes/patientRouter");
@@ -30,15 +40,6 @@ const orderRouter = require("./routes/orderRouter") ;
 const authMiddleware = require("./middlewares/authMiddleware");
 // const reportRouter = require("./routes/reportRouter");
 
-const io = new Server(server,
-    {
-        cors: {
-            origin: "http://localhost:3000",
-            methods: ["GET", "POST"],
-            credentials: true
-        }
-    }
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -50,7 +51,7 @@ socketHandler(io) ;
 app.use("/api/auth", authRouter);
 app.use("/api/communicate" , communicationRouter) ;
 app.use("/api/patient" , patientRouter) ;
-app.use("/api/appointment" , appointmentRouter) ;
+app.use("/api/appointments" , appointmentRouter) ;
 app.use("/api/medications" , medicationRouter) ;
 app.use("/api/orders" , orderRouter) ;
 // app.use('/api/reports', reportRouter);

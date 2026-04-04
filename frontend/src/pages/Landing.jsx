@@ -13,7 +13,6 @@ const Landing = () => {
         <FeaturesSection />
       </main>
 
-
       <Footer />
 
     </div>

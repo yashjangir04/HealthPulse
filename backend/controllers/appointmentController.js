@@ -24,6 +24,7 @@ const getAppointmentDetails = async (req, res) => {
 }
 
 const endAppointment = async (req, res) => {
+    console.log("----------------hello---------------")
     const { meetingID } = req.body;
     
     try {

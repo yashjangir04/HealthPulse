@@ -29,6 +29,7 @@ const Lobby = () => {
     const socket = io("http://localhost:5000");
 
     socket.on("connect", () => {
+      console.log("Here") ;
       if (isDoctor) {
         socket.emit("enter-doctor", {
           _id: user._id,

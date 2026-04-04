@@ -9,7 +9,6 @@ const getCoordinates = require("../utils/getCoordinates");
 const setTokenCookie = require("../utils/setTokenCookie");
 
 exports.doctorSignUp = async (req, res) => {
-    console.log("here");
     const { name, email, password, dob, gender, phoneNumber, specialization, address, qualification, university } = req.body;
 
     if (!name || !email || !password || !dob || !gender || !phoneNumber || !specialization || !address || !qualification || !university) {
@@ -140,8 +139,6 @@ exports.login = async (req, res) => {
 };
 
 exports.getMe = async (req, res) => {
-    console.log(req.user);
-    
     try {
         let user = await Doctor.findById(req.user.id)
             .select("-password")
