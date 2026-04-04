@@ -2,6 +2,7 @@ const Order = require("../models/order-model");
 const Patient = require("../models/patient-model");
 const Shopkeeper = require("../models/shopkeeper-model");
 const { calculateDistance } = require("../utils/calculateDistance");
+const { makeCall, sendSMS } = require("../services/twilioService");
 
 
 const getShopkeeperAcceptedDeals = async (req, res) => {
@@ -55,6 +56,11 @@ const addResponseToOrder = async (req, res) => {
     const distance = calculateDistance(coord1, coord2);
 
     try {
+        await sendSMS({
+            msg: "" ,
+            phoneNumber: order.patientID.phoneNumber
+        }) ;
+
         const updatedOrder = await Order.findByIdAndUpdate(
             orderID,
             {
