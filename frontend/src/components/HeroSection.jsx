@@ -2,15 +2,33 @@ import { useState, useEffect, Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, ContactShadows, Float } from "@react-three/drei";
 import { ArrowRight, Sparkles, MessageSquare } from "lucide-react";
-import health from "../assets/Group 21.png";
-import arrow from "../assets/image 85.png";
+
 import vector1 from "../assets/blob1.png";
 import vector2 from "../assets/blob2.png";
+import Heart from "../components/Heart";
 
 const words = ["trusted", "accessible", "empowering", "digital"];
 
+// --- Custom component for automatic & mouse-tracked rotation ---
 function InteractiveModel({ children }) {
   const groupRef = useRef();
+
+  useFrame((state) => {
+    if (!groupRef.current) return;
+
+    const time = state.clock.getElapsedTime();
+    
+    // 1. Get mouse coordinates relative to the canvas (-1 to 1)
+    const targetX = (state.pointer.x * Math.PI) / 4; 
+    const targetY = (state.pointer.y * Math.PI) / 4;
+
+    // 2. Add base continuous rotation (speed 0.5) + the mouse offset
+    const expectedY = (time * 0.5) + targetX;
+    
+    // 3. Smoothly interpolate the rotation so it glides naturally
+    groupRef.current.rotation.y += (expectedY - groupRef.current.rotation.y) * 0.05;
+    groupRef.current.rotation.x += (-targetY - groupRef.current.rotation.x) * 0.05;
+  });
 
   return <group ref={groupRef}>{children}</group>;
 }
@@ -19,6 +37,7 @@ export default function HeroSection() {
   const [index, setIndex] = useState(0);
   const [visible, setVisible] = useState(true);
 
+  // Handle the text rotation effect
   useEffect(() => {
     const interval = setInterval(() => {
       setVisible(false);
@@ -33,6 +52,7 @@ export default function HeroSection() {
   return (
     <div className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-[#FAFCFF]">
       
+      {/* Background HTML Elements (Safely OUTSIDE the Canvas) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <img
           src={vector2}
@@ -49,6 +69,7 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-6 lg:px-12 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
         
+        {/* Left Side: UI & Text Content */}
         <div className="w-full lg:w-[55%] flex flex-col items-center lg:items-start text-center lg:text-left pt-10 lg:pt-0">
           
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm mb-8 transition-transform hover:scale-105 cursor-pointer">
@@ -107,6 +128,36 @@ export default function HeroSection() {
             </div>
           </div>
 
+        </div>
+
+        {/* Right Side: 3D Canvas */}
+        <div className="relative w-full lg:w-[45%] h-100 md:h-125 lg:h-175 flex items-center justify-center mt-10 lg:mt-0">
+          <div className="absolute inset-0 bg-linear-to-tr from-blue-100/40 to-indigo-50/40 rounded-full blur-3xl -z-10 transform scale-75"></div>
+          
+          {/* Strictly 3D elements inside the Canvas */}
+          <Canvas camera={{ position: [0, 0, 9], fov: 45 }} className="w-full h-full drop-shadow-2xl">
+            <ambientLight intensity={1.5} />
+            <directionalLight position={[5, 5, 5]} intensity={2} color="#ffffff" />
+            <directionalLight position={[-5, -5, -5]} intensity={0.5} color="#4f46e5" />
+            
+            <Suspense fallback={null}>
+              <Environment preset="city" />
+              <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1.5}>
+                {/* The Heart is wrapped in the interactive tracker */}
+                <InteractiveModel>
+                  <Heart scale={1.8} />
+                </InteractiveModel>
+              </Float>
+              <ContactShadows 
+                position={[0, -1.5, 0]} 
+                opacity={0.4} 
+                scale={10} 
+                blur={2.5} 
+                far={4} 
+                color="#1e1b4b"
+              />
+            </Suspense>
+          </Canvas>
         </div>
         
       </div>
