@@ -17,17 +17,19 @@ function InteractiveModel({ children }) {
     if (!groupRef.current) return;
 
     const time = state.clock.getElapsedTime();
-    
+
     // 1. Get mouse coordinates relative to the canvas (-1 to 1)
-    const targetX = (state.pointer.x * Math.PI) / 4; 
+    const targetX = (state.pointer.x * Math.PI) / 4;
     const targetY = (state.pointer.y * Math.PI) / 4;
 
     // 2. Add base continuous rotation (speed 0.5) + the mouse offset
-    const expectedY = (time * 0.5) + targetX;
-    
+    const expectedY = time * 0.5 + targetX;
+
     // 3. Smoothly interpolate the rotation so it glides naturally
-    groupRef.current.rotation.y += (expectedY - groupRef.current.rotation.y) * 0.05;
-    groupRef.current.rotation.x += (-targetY - groupRef.current.rotation.x) * 0.05;
+    groupRef.current.rotation.y +=
+      (expectedY - groupRef.current.rotation.y) * 0.05;
+    groupRef.current.rotation.x +=
+      (-targetY - groupRef.current.rotation.x) * 0.05;
   });
 
   return <group ref={groupRef}>{children}</group>;
@@ -44,14 +46,13 @@ export default function HeroSection() {
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % words.length);
         setVisible(true);
-      }, 400); 
+      }, 400);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-[#FAFCFF]">
-      
       {/* Background HTML Elements (Safely OUTSIDE the Canvas) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <img
@@ -68,13 +69,13 @@ export default function HeroSection() {
       </div>
 
       <div className="container mx-auto px-6 lg:px-12 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
-        
         {/* Left Side: UI & Text Content */}
         <div className="w-full lg:w-[55%] flex flex-col items-center lg:items-start text-center lg:text-left pt-10 lg:pt-0">
-          
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-blue-100 shadow-sm mb-8 transition-transform hover:scale-105 cursor-pointer">
             <span className="flex h-2 w-2 rounded-full bg-blue-600 animate-pulse"></span>
-            <span className="text-sm font-semibold text-blue-800">Transforming Rural Healthcare</span>
+            <span className="text-sm font-semibold text-blue-800">
+              Transforming Rural Healthcare
+            </span>
           </div>
 
           <h1 className="font-black leading-[1.15] tracking-tight text-[42px] sm:text-[56px] md:text-[68px] lg:text-[76px] xl:text-[84px] text-gray-900 mb-6">
@@ -92,7 +93,8 @@ export default function HeroSection() {
           </h1>
 
           <p className="text-lg md:text-xl text-gray-500 font-medium max-w-2xl mb-10 leading-relaxed">
-            Empowering communities with accessible, AI-driven healthcare insights and reliable medical support right at your fingertips.
+            Empowering communities with accessible, AI-driven healthcare
+            insights and reliable medical support right at your fingertips.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto">
@@ -107,39 +109,53 @@ export default function HeroSection() {
           </div>
 
           <div className="mt-12 w-full max-w-md lg:max-w-sm">
-            <div className="relative group cursor-pointer">
-              <div className="absolute -inset-1 bg-linear-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
-              <div className="relative flex items-center justify-between px-6 py-4 bg-white/90 backdrop-blur-md border border-white rounded-2xl shadow-lg transition-transform duration-300 group-hover:-translate-y-1">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                    <MessageSquare size={20} className="animate-pulse" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-sm font-semibold text-gray-900">Not feeling well?</span>
-                    <span className="text-xs font-medium text-blue-600 flex items-center gap-1">
-                      Talk to our AI Assistant <Sparkles size={12} />
-                    </span>
-                  </div>
+            <div className="group cursor-pointer flex items-center justify-between px-6 py-4 bg-white border border-blue-50 rounded-2xl shadow-[0_4px_20px_-4px_rgba(37,99,235,0.15)] hover:shadow-[0_8px_30px_-4px_rgba(37,99,235,0.3)] transition-all duration-300 hover:-translate-y-1">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                  {/* Removed animate-pulse here to stop continuous GPU repainting */}
+                  <MessageSquare size={20} />
                 </div>
-                <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                  <ArrowRight size={16} className="-rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+                <div className="flex flex-col text-left">
+                  <span className="text-sm font-semibold text-gray-900">
+                    Not feeling well?
+                  </span>
+                  <span className="text-xs font-medium text-blue-600 flex items-center gap-1">
+                    Talk to our AI Assistant <Sparkles size={12} />
+                  </span>
                 </div>
+              </div>
+
+              <div className="w-8 h-8 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                <ArrowRight
+                  size={16}
+                  className="-rotate-45 group-hover:rotate-0 transition-transform duration-300"
+                />
               </div>
             </div>
           </div>
-
         </div>
 
         {/* Right Side: 3D Canvas */}
         <div className="relative w-full lg:w-[45%] h-100 md:h-125 lg:h-175 flex items-center justify-center mt-10 lg:mt-0">
           <div className="absolute inset-0 bg-linear-to-tr from-blue-100/40 to-indigo-50/40 rounded-full blur-3xl -z-10 transform scale-75"></div>
-          
+
           {/* Strictly 3D elements inside the Canvas */}
-          <Canvas camera={{ position: [0, 0, 9], fov: 45 }} className="w-full h-full drop-shadow-2xl">
+          <Canvas
+            camera={{ position: [0, 0, 9], fov: 45 }}
+            className="w-full h-full drop-shadow-2xl"
+          >
             <ambientLight intensity={1.5} />
-            <directionalLight position={[5, 5, 5]} intensity={2} color="#ffffff" />
-            <directionalLight position={[-5, -5, -5]} intensity={0.5} color="#4f46e5" />
-            
+            <directionalLight
+              position={[5, 5, 5]}
+              intensity={2}
+              color="#ffffff"
+            />
+            <directionalLight
+              position={[-5, -5, -5]}
+              intensity={0.5}
+              color="#4f46e5"
+            />
+
             <Suspense fallback={null}>
               <Environment preset="city" />
               <Float speed={2.5} rotationIntensity={0.5} floatIntensity={1.5}>
@@ -148,18 +164,17 @@ export default function HeroSection() {
                   <Heart scale={1.8} />
                 </InteractiveModel>
               </Float>
-              <ContactShadows 
-                position={[0, -1.5, 0]} 
-                opacity={0.4} 
-                scale={10} 
-                blur={2.5} 
-                far={4} 
+              <ContactShadows
+                position={[0, -1.5, 0]}
+                opacity={0.4}
+                scale={10}
+                blur={2.5}
+                far={4}
                 color="#1e1b4b"
               />
             </Suspense>
           </Canvas>
         </div>
-        
       </div>
     </div>
   );
