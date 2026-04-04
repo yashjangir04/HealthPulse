@@ -13,11 +13,9 @@ def query_agent(question):
     docs_medical = medical_store.similarity_search(question, k=6)
     docs_personal = personal_store.similarity_search(question, k=4)
     
-
-    # This is to check that if the agest is able to fetch the correct data
-    context_str = "GENERAL MEDICAL KNOWLEDGE\n"
+    context_str = "=== GENERAL MEDICAL KNOWLEDGE ===\n"
     context_str += "\n\n".join([doc.page_content for doc in docs_medical])
-    context_str += "\n\nPATIENT'S PERSONAL MEDICAL RECORDS\n"
+    context_str += "\n\n=== PATIENT'S PERSONAL MEDICAL RECORDS ===\n"
     context_str += "\n\n".join([doc.page_content for doc in docs_personal])
     
     system_prompt = (
@@ -45,5 +43,5 @@ def query_agent(question):
         return response
     except Exception as e:
         if "AuthenticationError" in str(e) or "api_key" in str(e).lower():
-            return "Invalid Api Key."
+            return "Configuration Error: Please make sure you have added a valid GROQ_API_KEY in the `.env` file."
         return f"Error evaluating query: {str(e)}"
