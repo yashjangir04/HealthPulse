@@ -4,12 +4,12 @@ const Shopkeeper = require("../models/shopkeeper-model");
 const { calculateDistance } = require("../utils/calculateDistance");
 
 
-const getShopkeeperAcceptedDeals = async (req , res) => {
+const getShopkeeperAcceptedDeals = async (req, res) => {
     try {
         const shopkeeper = await Shopkeeper.findById(req.user.id);
         if (!shopkeeper) return res.status(404).json({ success: false });
 
-        const orders = await Order.find({ shopkeeperID: shopkeeper._id }).populate("patientID").sort({ createdAt: -1 }).lean() ;
+        const orders = await Order.find({ shopkeeperID: shopkeeper._id }).populate("patientID").sort({ createdAt: -1 }).lean();
         res.json(orders);
     } catch (error) {
         res.status(500).json({ msg: error.message });
@@ -120,4 +120,32 @@ const acceptOrder = async (req, res) => {
     }
 }
 
-module.exports = { createOrder, getAllActiveOrders, addResponseToOrder, getPatientOrders, acceptOrder, getShopkeeperAcceptedDeals };
+const rejectOrder = async (req , res) => {
+    const { orderID, price, shopkeeperID } = req.body;
+
+    try {
+        await Order.updateOne(
+            {
+                _id: orderID
+            },
+            {
+                $set: {
+                    price: price,
+                    status: "rejected",
+                    shopkeeperID: shopkeeperID,
+                    responses: req.body.responses
+                }
+            }
+        );
+
+        return res.status(200).json({
+            message: "Order rejected successfully"
+        });
+    } catch (err) {
+        return res.status(500).json({
+            message: "Error rejecting order"
+        });
+    }
+}
+
+module.exports = { createOrder, getAllActiveOrders, addResponseToOrder, getPatientOrders, acceptOrder, getShopkeeperAcceptedDeals , rejectOrder };

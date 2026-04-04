@@ -52,6 +52,16 @@ const shopkeeperSchema = new mongoose.Schema({
         type: Number,
         default: 5
     },
+    licenseNumber: {
+        type: String,
+        required: true,
+        default: "DL-MH-2024-98765"
+    },
+    gstNumber: {
+        type: String,
+        required: true,
+        default: "27ABCDE1234F1Z5"
+    },
 }, { timestamps: true });
 
 shopkeeperSchema.index({ "address.location": "2dsphere" });

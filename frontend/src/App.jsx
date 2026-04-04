@@ -260,6 +260,19 @@ function App() {
             </MainLayout>
           }
         ></Route>
+
+        <Route
+          path="/ai-help-native"
+          element={
+            <MainLayout
+              showNavbar={false}
+              showSidebar={false}
+              isFullHeighted={false}
+            >
+              <ChatPage />
+            </MainLayout>
+          }
+        ></Route>
         
 
       </Routes>
