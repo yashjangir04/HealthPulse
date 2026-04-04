@@ -7,6 +7,7 @@ import MeetingRoom from "./pages/MeetingRoom";
 import Contact from "./pages/ContactPage";
 import MedicineDelivery from "./pages/MedicineDelivery";
 import ProtectedRoute from "./ProtectedRoute";
+
 import ProfilePage from "./pages/ProfilePage";
 import Connect from "./pages/Connect";
 
@@ -15,13 +16,20 @@ import SignInForm from "./pages/SignInForm";
 import StepForm from "./pages/StepFormDoctor";
 import StepFormPatient from "./pages/StepFormPatient";
 import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+
+import SignInForm from "./pages/SignInForm";
+
+import StepForm from "./pages/StepFormDoctor";
+import StepFormPatient from "./pages/StepFormPatient";
+import StepFormShopkeeper from "./pages/StepFormShopkeeper";
+
 import Lobby from "./pages/Lobby";
 import Appointments from "./pages/Appointments";
 import Signup from "./pages/Signup";
 import ShopkeeperOrders from "./pages/ShopkeeperOrders";
 import PatientOrders from "./pages/PatientOrders";
 import ChatPage from "./pages/ChatPage";
-
+import ProfilePage from "./pages/ProfilePage";
 function App() {
   return (
     <BrowserRouter>
