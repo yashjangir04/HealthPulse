@@ -91,3 +91,24 @@ exports.getContacts = async (req, res) => {
       res.status(500).json({ msg: error.message });
     }
   };
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { height, weight, aiContext } = req.body;
+
+    const updatedPatient = await Patient.findByIdAndUpdate(
+      req.user.id,
+      { $set: { height, weight, aiContext } },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedPatient) {
+      return res.status(404).json({ msg: "Patient not found" });
+    }
+
+    res.json(updatedPatient);
+  } catch (error) {
+    console.error("Profile update error:", error);
+    res.status(500).json({ msg: error.message });
+  }
+};

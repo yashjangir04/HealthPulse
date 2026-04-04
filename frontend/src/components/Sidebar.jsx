@@ -5,7 +5,6 @@ import { useLanguage } from "../utils/LanguageContext";
 import {
   User,
   Sparkles,
-  FileText,
   Users,
   Bell,
   UserRound,
@@ -57,7 +56,6 @@ const Sidebar = ({
     const allItems = {
       profile: { icon: <User size={20} />, label: t("profile"), path: "/profile" },
       aiHelp: { icon: <Sparkles size={20} />, label: t("aiHelp"), path: "/ai-help" },
-      reports: { icon: <FileText size={20} />, label: t("reports"), path: "/reports" },
       contacts: { icon: <Users size={20} />, label: t("contacts"), path: "/contact" },
       reminder: { icon: <Bell size={20} />, label: t("reminder"), path: "/medi-list" },
       appointments: { icon: <Calendar size={20} />, label: t("appointments"), path: "/appointments" },
@@ -84,7 +82,6 @@ const Sidebar = ({
         return [
           allItems.profile,
           allItems.aiHelp,
-          allItems.reports,
           allItems.contacts,
           allItems.reminder,
           allItems.appointments,

@@ -1,91 +1,197 @@
-# HealthPulse
+# HealthPulse+
 
-HealthPulse is a comprehensive, multi-component medical health application designed to bridge the gap between patients, healthcare providers, and advanced AI-driven medical assistance. The project includes a robust backend, an interactive frontend, OCR-based medical report extraction, and a dynamic AI medical assistant.
+> **HACKSAGON 2026 Finalist** — Built by **Team Kirmada**
 
-## Project Structure
+HealthPulse is a full-stack, AI-powered healthcare platform that unifies telemedicine, an AI health assistant, pharmacy bidding, and multilingual voice interaction — all under one roof.
 
-This repository is structured as a monorepo containing four main components:
+---
 
-### 1. `frontend` (React + Vite)
-The primary user-facing web application.
-- **Tech Stack**: React, Vite, Tailwind CSS, Framer Motion, Socket.io-client, WebRTC (ZegoCloud), Three.js.
-- **Features**: Interactive UI, real-time communication (Socket.IO), responsive design, 3D elements, and patient/appointment management interfaces.
-- **Environment Variables**: Create a `.env` file in the `frontend` directory with the following structure:
-  ```env
-  VITE_ZC_SERVER_SECRET=
-  VITE_ZC_APP_ID=
-  VITE_BACKEND_ROUTE=
-  ```
-- **To Run**:
-  ```bash
-  cd frontend
-  npm install
-  npm run dev
-  ```
+## 🏗️ Architecture Overview
 
-### 2. `backend` (Node.js + Express)
-The core backend server handling business logic, user authentication, and database interactions.
-- **Tech Stack**: Node.js, Express, MongoDB (Mongoose), Socket.io, JWT, bcrypt, Twilio.
-- **Features**: RESTful APIs for authentication, communication, patient tracking, appointments, medications, and orders. Also manages real-time WebSocket connections.
-- **Environment Variables**: Create a `.env` file in the `backend` directory with the following structure:
-  ```env
-  PORT=
-  MONGODB_URI=
-  JWT_SECRET=
-  TWILIO_ACCOUNT_SID=
-  TWILIO_AUTH_TOKEN=
-  TWILIO_PHONE_NUMBER=
-  ```
-- **To Run**:
-  ```bash
-  cd backend
-  npm install
-  npm run dev
-  ```
+The project is a **monorepo** with 4 independently running services that communicate with each other over HTTP and WebSocket:
 
-### 3. `report_Ai` (Python + Flask)
-An automated medical report parser and extraction microservice.
-- **Tech Stack**: Python, Flask, EasyOCR, PyTorch, OpenCV, TheFuzz.
-- **Features**: Takes uploaded images or image URLs of medical documents, performs OCR (Optical Character Recognition) enhanced by computer vision (CLAHE), and uses fuzzy logic to categorize extracted text into structured fields like "Patient Information", "Diagnosis", "Tests", and "Medications". 
-- **To Run**:
-  ```bash
-  cd report_Ai
-  pip install -r requirements.txt
-  python app.py
-  ```
-  *(Server runs on port 5500)*
+```
+Health_Pulse/
+├── frontend/          → React + Vite UI (port 5173)
+├── backend/           → Node.js + Express API (port 5000)
+├── ai_agent/
+│   └── medical_bot/   → Python Flask AI Chatbot & Voice Server (port 5500)
+└── report_Ai/         → Python Flask OCR Report Extractor (port 5501)
+```
 
-### 4. `ai_agent/medical_bot` (Python + Flask + ChromaDB)
-A personalized AI medical assistant that acts as a secure chatbot for individual health queries.
-- **Tech Stack**: Python, Flask, ChromaDB (Vector Database).
-- **Features**: Maintains a massive underlying medical knowledge base alongside a personalized, isolated database for each user context. Patients can provide their medical history securely, and the agent uses Retrieval-Augmented Generation (RAG) to provide highly relevant and personalized medical advice. It includes both a terminal-based interface (`main.py`) and a web-based Flask interface (`app.py`).
-- **Environment Variables**: Create a `.env` file in the `ai_agent/medical_bot` directory with the following structure:
-  ```env
-  GROQ_API_KEY=
-  HUGGINGFACEHUB_API_TOKEN=
-  ```
-- **To Run**:
-  ```bash
-  cd ai_agent/medical_bot
-  pip install -r requirements.txt
-  
-  # For web interface:
-  python app.py
-  
-  # For terminal interface:
-  python main.py
-  ```
+---
 
-## Getting Started
+## ✨ Key Features
 
-To bring up the entire application, you will need to start the separate processes respectively in different terminal windows:
+| Feature | Description |
+|---|---|
+| 🩺 **Live Telemedicine** | WebRTC video calls via ZegoCloud with real-time notes & prescription sync |
+| 🤖 **AI Health Assistant** | RAG-grounded chatbot using Groq LLM + ChromaDB — responds in your own language |
+| 🏥 **HP-ID Verified Doctors** | Doctors must register with their Healthcare Professional ID |
+| ⭐ **Post-Session Ratings** | Patients rate doctors after each consultation; rolling average updates the doctor's profile |
+| 🎤 **Multilingual Voice** | Sarvam AI TTS + Whisper STT for native Hindi/English voice interactions |
+| 🧠 **AI Symptom Analyzer** | Describe symptoms via text or voice; LLM routes you to the right specialist |
+| 💊 **Pharmacy Marketplace** | Prescription is broadcast to nearby shopkeepers who bid for best price |
+| 📋 **OCR Report Parser** | Upload a medical report image to extract structured data via EasyOCR |
+| 🌐 **Multilingual UI** | Toggle between English and Hindi across the entire interface |
 
-1. Start the main **Node.js backend**.
-2. Start the **React frontend** app.
-3. Start the **Report AI** extraction Flask server.
-4. Start the **AI Assistant** Flask server.
+---
 
-Ensure that you configure the necessary `.env` files for the backend and the AI agent respectively before starting the servers.
+## 🚀 Getting Started
 
-## Authors
-**team_kirmada** - Project for Hacksagon 2026
+You need **4 terminal windows** open — one for each service.
+
+### Prerequisites
+
+- **Node.js** v18 or higher
+- **Python** 3.10 or higher
+- **MongoDB** Atlas account (or local MongoDB)
+- **ZegoCloud** account for video calls
+- **Groq** API key for LLM
+
+---
+
+### 1️⃣ Backend (Node.js — Port 5000)
+
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file inside `backend/`:
+
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_here
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=your_twilio_phone_number
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Then start the server:
+
+```bash
+node app.js
+# or for auto-reload:
+npx nodemon app.js
+```
+
+✅ Server runs at `http://localhost:5000`
+
+---
+
+### 2️⃣ Frontend (React + Vite — Port 5173)
+
+```bash
+cd frontend
+npm install
+```
+
+Create a `.env` file inside `frontend/`:
+
+```env
+VITE_ZC_SERVER_SECRET=your_zegocloud_server_secret
+VITE_ZC_APP_ID=your_zegocloud_app_id
+VITE_BACKEND_ROUTE=http://localhost:5000
+VITE_AI_ROUTE=http://127.0.0.1:5500
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+Then start the dev server:
+
+```bash
+npm run dev
+```
+
+✅ App runs at `http://localhost:5173`
+
+---
+
+### 3️⃣ AI Chatbot & Voice Server (Python Flask — Port 5500)
+
+```bash
+cd ai_agent/medical_bot
+```
+
+Create a `.env` file inside `ai_agent/medical_bot/`:
+
+```env
+GROQ_API_KEY=your_groq_api_key
+HUGGINGFACEHUB_API_TOKEN=your_huggingface_token
+```
+
+Install dependencies and run:
+
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+✅ AI server runs at `http://127.0.0.1:5500`
+
+> **Note for Windows users:** If you see a `DLL initialization failed` error related to PyTorch, try running `pip install torch --index-url https://download.pytorch.org/whl/cpu` to install the CPU-only version.
+
+---
+
+### 4️⃣ OCR Report Extractor (Python Flask — Port 5501)
+
+```bash
+cd report_Ai
+pip install -r requirements.txt
+python app.py
+```
+
+✅ Report extraction server runs at `http://localhost:5501`
+
+---
+
+## 🗺️ Full Startup Checklist
+
+Open **4 separate terminals** and run in order:
+
+| # | Directory | Command | Port |
+|---|---|---|---|
+| 1 | `backend/` | `node app.js` | `5000` |
+| 2 | `frontend/` | `npm run dev` | `5173` |
+| 3 | `ai_agent/medical_bot/` | `python app.py` | `5500` |
+| 4 | `report_Ai/` | `python app.py` | `5501` |
+
+Then open your browser to **http://localhost:5173**
+
+---
+
+## 🗝️ Environment Variables Summary
+
+| File | Key Variables |
+|---|---|
+| `backend/.env` | `PORT`, `MONGODB_URI`, `JWT_SECRET`, `TWILIO_*`, `SUPABASE_*` |
+| `frontend/.env` | `VITE_ZC_*`, `VITE_BACKEND_ROUTE`, `VITE_AI_ROUTE`, `VITE_SUPABASE_*` |
+| `ai_agent/medical_bot/.env` | `GROQ_API_KEY`, `HUGGINGFACEHUB_API_TOKEN` |
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend:**
+React · Vite · Tailwind CSS · Socket.IO Client · ZegoCloud WebRTC · Lucide React
+
+**Backend:**
+Node.js · Express · MongoDB (Mongoose) · Socket.IO · JWT · bcrypt · Twilio · Supabase
+
+**AI Services:**
+Python · Flask · ChromaDB · Groq LLM · Sarvam AI · HuggingFace Embeddings · RAG Pipeline
+
+**OCR Service:**
+Python · Flask · EasyOCR · PyTorch · OpenCV · TheFuzz
+
+---
+
+## 👥 Authors
+
+**Team Kirmada** — HACKSAGON 2026
+
+- Yash Jangir — Full Stack & AI Lead

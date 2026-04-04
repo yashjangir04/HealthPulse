@@ -23,7 +23,6 @@ const ProfileView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -375,11 +374,11 @@ const ProfileView = () => {
               <div className="bg-white rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col min-h-[500px]">
                 <div className="flex justify-between items-center mb-8">
                   <h3 className="text-2xl font-black text-slate-900 tracking-tight">Lab Reports</h3>
-                  <button 
-                    onClick={() => fileInputRef.current.click()} 
-                    className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-[0_8px_20px_rgb(37,99,235,0.25)] hover:bg-blue-700 hover:scale-105 transition-all"
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 px-4 py-2 rounded-full hover:bg-blue-100 transition-colors"
                   >
-                    <Plus size={20} strokeWidth={3}/>
+                    + Upload Report
                   </button>
                 </div>
                 
@@ -421,20 +420,15 @@ const ProfileView = () => {
         )}
       </div>
 
-      <input type="file" ref={fileInputRef} className="hidden" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => handleReportUpload(e.target.files[0])} />
-      <ReportsListOverlay isOpen={isReportsOpen} onClose={() => setIsReportsOpen(false)} reports={userData.reports} onUpload={handleReportUpload} />
-      <EditProfileModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} userData={userData} onSave={async (formData) => {
+      <ReportsListOverlay isOpen={isReportsOpen} onClose={() => setIsReportsOpen(false)} reports={userData.reports} onUpload={() => setIsEditModalOpen(true)} />
+      <EditProfileModal isOpen={isEditModalOpen} onClose={() => {
+        setIsEditModalOpen(false);
+        if (userData?.email) fetchReports(userData.email);
+      }} userData={userData} onSave={async (formData) => {
   try {
     const res = await axios.put("/api/patient/profile", formData);
-
-    // update UI with backend response
-    setUserData(prev => ({
-      ...prev,
-      ...res.data
-    }));
-
+    setUserData(prev => ({ ...prev, ...res.data }));
     setIsEditModalOpen(false);
-
   } catch (err) {
     console.error(err);
     alert("Update failed");

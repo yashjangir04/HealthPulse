@@ -8,6 +8,7 @@ const {
   addContact,
   deleteContact,
   getPrimaryContacts,
+  updateProfile,
 } = require("../controllers/patientController");
 
 
@@ -18,5 +19,7 @@ router.post("/add-contact", authMiddleware, addContact);
 router.delete("/delete-contact", authMiddleware, deleteContact);
 
 router.get("/primary-contacts", authMiddleware, getPrimaryContacts);
+
+router.put("/profile", authMiddleware, updateProfile);
 
 module.exports = router;

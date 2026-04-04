@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaMicrophone, FaMicrophoneSlash, FaSpinner } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const VOICE_API = `${import.meta.env.VITE_AI_ROUTE}/api/voice-command`;
+const VOICE_API = `${import.meta.env.VITE_VOICE_ROUTE}/api/voice-command`;
 
 const VoiceAssistant = () => {
   const [isRecording, setIsRecording] = useState(false);
